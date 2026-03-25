@@ -1,0 +1,91 @@
+<!-- src/app/features/register/register.component.html -->
+<div class="register-page">
+  <div class="register-card">
+
+    <div class="card-header">
+      <a routerLink="/mountain" class="back-link">← Volver</a>
+      <h1 class="card-title">Crear cuenta</h1>
+      <p class="card-sub">Únete a la galería Rydex</p>
+    </div>
+
+    @if (error()) {
+      <div class="form-error-alert">{{ error() }}</div>
+    }
+
+    <div class="form-grid">
+
+      <div class="form-group full">
+        <label class="form-label">Nombre completo *</label>
+        <input class="form-input" type="text" placeholder="Juan Pérez"
+               [ngModel]="nombre()" (ngModelChange)="nombre.set($event)"
+               (keydown.enter)="register()" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Documento (cédula) *</label>
+        <input class="form-input" type="text" placeholder="1000123456"
+               [ngModel]="documento()" (ngModelChange)="documento.set($event)"
+               (keydown.enter)="register()" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Teléfono</label>
+        <input class="form-input" type="tel" placeholder="+57 300 000 0000"
+               [ngModel]="telefono()" (ngModelChange)="telefono.set($event)"
+               (keydown.enter)="register()" />
+      </div>
+
+      <div class="form-group full">
+        <label class="form-label">Correo electrónico *</label>
+        <input class="form-input" type="email" placeholder="correo@ejemplo.com"
+               [ngModel]="email()" (ngModelChange)="email.set($event)"
+               (keydown.enter)="register()" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Contraseña *</label>
+        <div class="pass-wrap">
+          <input class="form-input"
+                 [type]="showPass() ? 'text' : 'password'"
+                 placeholder="Mínimo 6 caracteres"
+                 [ngModel]="password()" (ngModelChange)="password.set($event)"
+                 (keydown.enter)="register()" />
+          <button type="button" class="pass-toggle" (click)="togglePass()">
+            @if (showPass()) {
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                <line x1="1" y1="1" x2="23" y2="23"/>
+              </svg>
+            } @else {
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            }
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Confirmar contraseña *</label>
+        <input class="form-input"
+               [type]="showPass() ? 'text' : 'password'"
+               placeholder="Repite la contraseña"
+               [ngModel]="confirm()" (ngModelChange)="confirm.set($event)"
+               (keydown.enter)="register()" />
+      </div>
+
+    </div>
+
+    <button class="btn-register" (click)="register()" [disabled]="loading()">
+      @if (loading()) { Creando cuenta... } @else { Crear cuenta }
+    </button>
+
+    <p class="login-link">
+      ¿Ya tienes cuenta?
+      <a routerLink="/login" class="link-orange">Inicia sesión</a>
+    </p>
+
+  </div>
+</div>

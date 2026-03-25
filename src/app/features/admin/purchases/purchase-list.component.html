@@ -1,0 +1,80 @@
+<!-- src/app/features/admin/purchases/purchase-list.component.html -->
+<div class="admin-page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Compras</h1>
+      <p class="page-sub">Historial de compras a proveedores</p>
+    </div>
+    <a routerLink="/admin/compras/nueva" class="btn-primary">+ Nueva compra</a>
+  </div>
+
+  @if (loading()) {
+    <div class="table-skeleton">
+      @for (i of [1,2,3]; track i) { <div class="row-skeleton"></div> }
+    </div>
+  } @else if (compras().length === 0) {
+    <div class="empty-state">
+      <p>No hay compras registradas.</p>
+      <a routerLink="/admin/compras/nueva" class="btn-primary">Registrar primera compra</a>
+    </div>
+  } @else {
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Fecha</th>
+            <th>Proveedor</th>
+            <th>Ítems</th>
+            <th>Total</th>
+            <th>Detalle</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (compra of compras(); track compra.id_compra) {
+            <tr>
+              <td class="sku">#{{ compra.id_compra }}</td>
+              <td>{{ compra.fecha | date:'dd/MM/yyyy' }}</td>
+              <td class="model">{{ compra.proveedor_nombre }}</td>
+              <td>{{ compra.detalles.length }} ítem(s)</td>
+              <td class="price">{{ formatPrice(compra.total) }}</td>
+              <td>
+                <button class="action-btn" (click)="toggleExpand(compra.id_compra)">
+                  {{ expanded() === compra.id_compra ? 'Ocultar' : 'Ver detalle' }}
+                </button>
+              </td>
+            </tr>
+            @if (expanded() === compra.id_compra) {
+              <tr class="detail-row">
+                <td colspan="6">
+                  <div class="detail-inner">
+                    <table class="inner-table">
+                      <thead>
+                        <tr>
+                          <th>Bicicleta</th>
+                          <th>Cantidad</th>
+                          <th>P. Unitario</th>
+                          <th>Subtotal</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @for (d of compra.detalles; track d.id_detalle_compra) {
+                          <tr>
+                            <td>{{ d.bicicleta?.modelo ?? 'ID: ' + d.id_bicicleta }}</td>
+                            <td>{{ d.cantidad }}</td>
+                            <td>{{ formatPrice(d.precio_unitario) }}</td>
+                            <td>{{ formatPrice(d.subtotal) }}</td>
+                          </tr>
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

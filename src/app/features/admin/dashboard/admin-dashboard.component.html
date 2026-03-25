@@ -1,0 +1,115 @@
+<!-- src/app/features/admin/dashboard/admin-dashboard.component.html -->
+<div class="dashboard">
+
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Dashboard</h1>
+      <p class="page-sub">Resumen de operaciones de la tienda</p>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="metrics-grid">
+      @for (i of [1,2,3,4]; track i) {
+        <div class="metric-skeleton"></div>
+      }
+    </div>
+  } @else if (metrics()) {
+    <!-- Métricas principales -->
+    <div class="metrics-grid">
+      <div class="metric-card accent">
+        <div class="metric-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+        </div>
+        <div class="metric-info">
+          <p class="metric-label">Ingresos hoy</p>
+          <p class="metric-value">{{ formatCurrency(metrics()!.ingresosHoy) }}</p>
+          <p class="metric-sub">{{ metrics()!.ventasHoy }} ventas realizadas</p>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-icon green">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>
+          </svg>
+        </div>
+        <div class="metric-info">
+          <p class="metric-label">Ventas esta semana</p>
+          <p class="metric-value">{{ metrics()!.ventasSemana }}</p>
+          <p class="metric-sub">{{ formatCurrency(metrics()!.ingresosSemana) }} en ingresos</p>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-icon blue">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="18" cy="18" r="3"/><circle cx="6" cy="18" r="3"/>
+            <path d="M6 15l4-9 2 4.5M18 15l-6-3-2-4.5M12 6l1.5 3"/><circle cx="12" cy="5" r="1"/>
+          </svg>
+        </div>
+        <div class="metric-info">
+          <p class="metric-label">Total bicicletas</p>
+          <p class="metric-value">{{ metrics()!.totalBicicletas }}</p>
+          <p class="metric-sub">En catálogo activo</p>
+        </div>
+      </div>
+
+      <div class="metric-card" [class.warning]="metrics()!.stockBajo > 0">
+        <div class="metric-icon" [class.orange]="metrics()!.stockBajo > 0">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+        </div>
+        <div class="metric-info">
+          <p class="metric-label">Stock bajo mínimo</p>
+          <p class="metric-value">{{ metrics()!.stockBajo }}</p>
+          <p class="metric-sub">
+            @if (metrics()!.stockBajo > 0) { Requieren reabastecimiento }
+            @else { Todo el stock en orden }
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Accesos rápidos -->
+    <div class="quick-actions">
+      <h2 class="section-title">Acciones rápidas</h2>
+      <div class="actions-grid">
+        <a routerLink="/admin/bicicletas/nueva" class="action-card">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="18" cy="18" r="3"/><circle cx="6" cy="18" r="3"/>
+            <path d="M6 15l4-9 2 4.5M18 15l-6-3-2-4.5"/><circle cx="12" cy="5" r="1"/>
+            <line x1="12" y1="1" x2="12" y2="3"/>
+          </svg>
+          <span>Nueva bicicleta</span>
+        </a>
+        <a routerLink="/admin/compras/nueva" class="action-card">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>
+          </svg>
+          <span>Registrar compra</span>
+        </a>
+        <a routerLink="/admin/ventas" class="action-card">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <line x1="12" y1="1" x2="12" y2="23"/>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+          <span>Ver ventas</span>
+        </a>
+        <a routerLink="/admin/proveedores" class="action-card">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+          <span>Proveedores</span>
+        </a>
+      </div>
+    </div>
+  }
+</div>

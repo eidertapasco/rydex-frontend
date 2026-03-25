@@ -1,0 +1,23 @@
+/* src/app/features/admin/sales/sales-list.component.css */
+@import '../admin-shared.css';
+
+.total-box {
+  background: rgba(255,77,0,0.08);
+  border: 1px solid rgba(255,77,0,0.2);
+  border-radius: 10px;
+  padding: 12px 20px;
+  text-align: right;
+}
+.total-label { display: block; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; color: var(--color-primary); text-transform: uppercase; }
+.total-value { display: block; font-size: 1.4rem; font-weight: 900; }
+
+.filter-group-inline { display: flex; align-items: center; gap: 6px; }
+.filter-label { font-size: 0.72rem; font-weight: 700; color: var(--color-text-muted); white-space: nowrap; }
+.btn-sm { padding: 8px 16px; font-size: 0.78rem; }
+
+.detail-row { background: var(--color-surface-2) !important; }
+.detail-inner { padding: 12px 20px; }
+.inner-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+.inner-table th { padding: 6px 10px; text-align: left; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--color-text-muted); border-bottom: 1px solid var(--color-border); }
+.inner-table td { padding: 8px 10px; border-bottom: 1px solid var(--color-border); }
+.inner-table tbody tr:last-child td { border-bottom: none; }

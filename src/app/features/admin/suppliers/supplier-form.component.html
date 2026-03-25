@@ -1,0 +1,56 @@
+<!-- src/app/features/admin/suppliers/supplier-form.component.html -->
+<div class="admin-page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">{{ isEdit ? 'Editar proveedor' : 'Nuevo proveedor' }}</h1>
+      <p class="page-sub">{{ isEdit ? 'Modifica los datos del proveedor' : 'Registra un nuevo proveedor' }}</p>
+    </div>
+    <a routerLink="/admin/proveedores" class="btn-secondary">← Volver</a>
+  </div>
+
+  @if (error()) {
+    <div class="alert alert-error">{{ error() }}</div>
+  }
+
+  <div class="form-card">
+    <div class="form-grid">
+
+      <div class="form-group full">
+        <label class="form-label">Nombre de empresa *</label>
+        <input class="form-input" type="text" placeholder="Trek Colombia S.A.S"
+               [ngModel]="form().nombre_empresa"
+               (ngModelChange)="update('nombre_empresa', $event)" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Persona de contacto *</label>
+        <input class="form-input" type="text" placeholder="Juan Pérez"
+               [ngModel]="form().persona_contacto"
+               (ngModelChange)="update('persona_contacto', $event)" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Teléfono de contacto</label>
+        <input class="form-input" type="tel" placeholder="+57 300 000 0000"
+               [ngModel]="form().telefono_contacto"
+               (ngModelChange)="update('telefono_contacto', $event)" />
+      </div>
+
+      <div class="form-group full">
+        <label class="form-label">Email de contacto</label>
+        <input class="form-input" type="email" placeholder="contacto@empresa.com"
+               [ngModel]="form().email_contacto"
+               (ngModelChange)="update('email_contacto', $event)" />
+      </div>
+
+    </div>
+
+    <div class="form-actions">
+      <button class="btn-primary" (click)="save()" [disabled]="saving()">
+        @if (saving()) { Guardando... }
+        @else { {{ isEdit ? 'Guardar cambios' : 'Crear proveedor' }} }
+      </button>
+      <a routerLink="/admin/proveedores" class="btn-secondary">Cancelar</a>
+    </div>
+  </div>
+</div>

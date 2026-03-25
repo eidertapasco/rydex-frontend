@@ -1,0 +1,136 @@
+<!-- src/app/features/cart/cart.component.html -->
+<div class="cart-page">
+
+  <!-- Order success screen -->
+  @if (orderSuccess()) {
+    <div class="success-screen">
+      <div class="success-icon">✓</div>
+      <h2>¡Orden confirmada!</h2>
+      <p>Tu pedido ha sido procesado exitosamente.</p>
+      <a class="btn-primary" routerLink="/mountain">Seguir comprando</a>
+    </div>
+  } @else {
+
+    <div class="cart-header">
+      <p class="cart-sup">YOUR SELECTION</p>
+      <h1 class="cart-title">SHOPPING CART</h1>
+    </div>
+
+    @if (cart.items().length === 0) {
+      <div class="empty-cart">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+          <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 01-8 0"/>
+        </svg>
+        <p>Tu carrito está vacío</p>
+        <a class="btn-primary" routerLink="/mountain">Ver catálogo</a>
+      </div>
+    } @else {
+      <div class="cart-layout">
+
+        <!-- Items list -->
+        <div class="items-col">
+          @for (item of cart.items(); track item.bicicleta.id_bicicleta) {
+            <div class="cart-item">
+              <div class="item-img">
+                <img [src]="item.bicicleta.imagenes?.[0] || 'assets/placeholder-bike.jpg'"
+                     [alt]="item.bicicleta.modelo" />
+              </div>
+
+              <div class="item-info">
+                <h3 class="item-name">{{ item.bicicleta.modelo }}</h3>
+                <p class="item-desc">{{ item.bicicleta.marca }} / {{ item.bicicleta.tipo }}</p>
+                <div class="item-tags">
+                  @if (item.talla) {
+                    <span class="item-tag">{{ item.talla }}</span>
+                  }
+                  @if (item.color) {
+                    <span class="item-tag">{{ item.color }}</span>
+                  }
+                </div>
+              </div>
+
+              <div class="item-controls">
+                <div class="qty-ctrl">
+                  <button (click)="cart.updateCantidad(item.bicicleta.id_bicicleta, item.cantidad - 1)">−</button>
+                  <span>{{ item.cantidad.toString().padStart(2,'0') }}</span>
+                  <button (click)="cart.updateCantidad(item.bicicleta.id_bicicleta, item.cantidad + 1)">+</button>
+                </div>
+                <p class="item-price">{{ formatPrice(item.bicicleta.precio * item.cantidad) }}</p>
+              </div>
+
+              <button class="remove-btn" (click)="cart.remove(item.bicicleta.id_bicicleta)" title="Eliminar">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </button>
+            </div>
+          }
+        </div>
+
+        <!-- Order summary -->
+        <div class="summary-col">
+          <div class="summary-card">
+            <h2 class="summary-title">Order Summary</h2>
+
+            <div class="summary-rows">
+              <div class="summary-row">
+                <span>SUBTOTAL</span>
+                <span>{{ formatPrice(cart.subtotal()) }}</span>
+              </div>
+              <div class="summary-row">
+                <span>SHIPPING</span>
+                <span class="free">FREE</span>
+              </div>
+              <div class="summary-row">
+                <span>TAX (8%)</span>
+                <span>{{ formatPrice(cart.tax()) }}</span>
+              </div>
+              @if (promoApplied()) {
+                <div class="summary-row discount">
+                  <span>DESCUENTO (10%)</span>
+                  <span>−{{ formatPrice(discount) }}</span>
+                </div>
+              }
+            </div>
+
+            <div class="summary-total">
+              <span>TOTAL</span>
+              <span class="total-amount">{{ formatPrice(finalTotal) }}</span>
+            </div>
+
+            @if (orderError()) {
+              <p class="order-error">{{ orderError() }}</p>
+            }
+
+            <button class="btn-checkout"
+                    [disabled]="checkingOut()"
+                    (click)="checkout()">
+              @if (checkingOut()) { PROCESANDO... }
+              @else { CHECKOUT NOW }
+            </button>
+
+            <p class="shipping-note">
+              Complimentary global shipping on all Kinetic Gallery orders. Estimated delivery: 3–5 business days.
+            </p>
+
+            <!-- Promo code -->
+            <div class="promo-section">
+              <p class="promo-label">ADD PROMO CODE</p>
+              <div class="promo-row">
+                <input class="promo-input" type="text" placeholder="RYDEX-2024"
+                       [ngModel]="promoCode()"
+                       (ngModelChange)="promoCode.set($event)" />
+                <button class="promo-btn" (click)="applyPromo()">
+                  {{ promoApplied() ? '✓' : 'APPLY' }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    }
+  }
+</div>

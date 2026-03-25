@@ -1,0 +1,95 @@
+<!-- src/app/features/admin/sales/sales-list.component.html -->
+<div class="admin-page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Ventas</h1>
+      <p class="page-sub">Historial completo de transacciones</p>
+    </div>
+    @if (ventas().length > 0) {
+      <div class="total-box">
+        <span class="total-label">Total filtrado</span>
+        <span class="total-value">{{ formatPrice(totalGeneral()) }}</span>
+      </div>
+    }
+  </div>
+
+  <!-- Filtros -->
+  <div class="filters-row">
+    <div class="filter-group-inline">
+      <label class="filter-label">Desde</label>
+      <input class="filter-input" type="date"
+             [ngModel]="fechaInicio()"
+             (ngModelChange)="fechaInicio.set($event)" />
+    </div>
+    <div class="filter-group-inline">
+      <label class="filter-label">Hasta</label>
+      <input class="filter-input" type="date"
+             [ngModel]="fechaFin()"
+             (ngModelChange)="fechaFin.set($event)" />
+    </div>
+    <button class="btn-primary btn-sm" (click)="load()">Filtrar</button>
+    <button class="btn-secondary btn-sm" (click)="fechaInicio.set(''); fechaFin.set(''); load()">Limpiar</button>
+  </div>
+
+  @if (loading()) {
+    <div class="table-skeleton">
+      @for (i of [1,2,3,4]; track i) { <div class="row-skeleton"></div> }
+    </div>
+  } @else if (ventas().length === 0) {
+    <div class="empty-state">
+      <p>No hay ventas en el período seleccionado.</p>
+    </div>
+  } @else {
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Fecha</th>
+            <th>Cliente</th>
+            <th>Total</th>
+            <th>Productos</th>
+            <th>Detalle</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (venta of ventas(); track venta.id_venta) {
+            <tr>
+              <td class="sku">#{{ venta.id_venta }}</td>
+              <td>{{ venta.fecha | date:'dd/MM/yyyy HH:mm' }}</td>
+              <td class="model">{{ venta.cliente_nombre ?? 'Cliente #' + venta.id_cliente }}</td>
+              <td class="price">{{ formatPrice(venta.total) }}</td>
+              <td>{{ venta.detalles?.length ?? '-' }} ítem(s)</td>
+              <td>
+                <button class="action-btn" (click)="toggleExpand(venta.id_venta)">
+                  {{ expanded() === venta.id_venta ? 'Ocultar' : 'Ver detalle' }}
+                </button>
+              </td>
+            </tr>
+            @if (expanded() === venta.id_venta && venta.detalles?.length) {
+              <tr class="detail-row">
+                <td colspan="6">
+                  <div class="detail-inner">
+                    <table class="inner-table">
+                      <thead><tr><th>Bicicleta</th><th>Cant.</th><th>P. Unitario</th><th>Subtotal</th></tr></thead>
+                      <tbody>
+                        @for (d of venta.detalles; track d.id_detalle) {
+                          <tr>
+                            <td>{{ d.bicicleta?.modelo ?? 'ID: ' + d.id_bicicleta }}</td>
+                            <td>{{ d.cantidad }}</td>
+                            <td>{{ formatPrice(d.precio_unitario) }}</td>
+                            <td>{{ formatPrice(d.subtotal) }}</td>
+                          </tr>
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

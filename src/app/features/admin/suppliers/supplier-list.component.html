@@ -1,0 +1,59 @@
+<!-- src/app/features/admin/suppliers/supplier-list.component.html -->
+<div class="admin-page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Proveedores</h1>
+      <p class="page-sub">Gestión de contactos y proveedores</p>
+    </div>
+    <a routerLink="/admin/proveedores/nuevo" class="btn-primary">+ Nuevo proveedor</a>
+  </div>
+
+  @if (loading()) {
+    <div class="table-skeleton">
+      @for (i of [1,2,3]; track i) { <div class="row-skeleton"></div> }
+    </div>
+  } @else if (proveedores().length === 0) {
+    <div class="empty-state">
+      <p>No hay proveedores registrados.</p>
+      <a routerLink="/admin/proveedores/nuevo" class="btn-primary">Agregar proveedor</a>
+    </div>
+  } @else {
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Empresa</th>
+            <th>Contacto</th>
+            <th>Teléfono</th>
+            <th>Email</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (p of proveedores(); track p.id_proveedor) {
+            <tr>
+              <td class="model">{{ p.nombre_empresa }}</td>
+              <td>{{ p.persona_contacto }}</td>
+              <td>{{ p.telefono_contacto }}</td>
+              <td>{{ p.email_contacto }}</td>
+              <td class="actions">
+                <a [routerLink]="['/admin/proveedores', p.id_proveedor, 'editar']"
+                   class="action-btn edit">Editar</a>
+                @if (confirmDelete() === p.id_proveedor) {
+                  <span class="confirm-msg">¿Eliminar?</span>
+                  <button class="action-btn danger"
+                          (click)="doDelete(p.id_proveedor)">Sí</button>
+                  <button class="action-btn"
+                          (click)="confirmDelete.set(null)">No</button>
+                } @else {
+                  <button class="action-btn delete"
+                          (click)="confirmDelete.set(p.id_proveedor)">Eliminar</button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
