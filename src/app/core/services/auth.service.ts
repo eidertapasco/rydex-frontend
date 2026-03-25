@@ -2,9 +2,10 @@
 import { Injectable, signal, inject } from '@angular/core';
 import { HttpClient }                 from '@angular/common/http';
 import { Router }                     from '@angular/router';
+import { Observable }                 from 'rxjs';
 import { tap }                        from 'rxjs/operators';
 import { environment }                from '../../../environments/environment';
-import { AuthResponse, Cliente, LoginRequest } from '../models/models';
+import { AuthResponse, Cliente, LoginRequest, RegisterRequest } from '../models/models';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -12,15 +13,25 @@ export class AuthService {
   private router = inject(Router);
   private api    = environment.apiUrl;
 
-  // El signal "cliente" representa al usuario logueado (o null si no hay sesión)
   readonly cliente = signal<Cliente | null>(this.getStoredCliente());
 
   get isLoggedIn(): boolean {
     return this.cliente() !== null;
   }
 
-  login(credentials: LoginRequest) {
+  login(credentials: LoginRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.api}/auth/login`, credentials).pipe(
+      tap(res => {
+        localStorage.setItem('rydex-token', res.token);
+        localStorage.setItem('rydex-cliente', JSON.stringify(res.cliente));
+        this.cliente.set(res.cliente);
+      })
+    );
+  }
+
+  // Método register — llama a POST /api/auth/register
+  register(data: RegisterRequest): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.api}/auth/register`, data).pipe(
       tap(res => {
         localStorage.setItem('rydex-token', res.token);
         localStorage.setItem('rydex-cliente', JSON.stringify(res.cliente));

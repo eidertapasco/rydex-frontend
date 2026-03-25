@@ -74,7 +74,7 @@
      </button>
 
       <!-- Login / User -->
-      @if (auth.isLoggedIn) {
+      <!-- @if (auth.isLoggedIn) {
         <button class="btn-outline btn-sm" (click)="auth.logout()">
           Salir
         </button>
@@ -82,6 +82,18 @@
         <button class="btn-primary btn-sm" (click)="goToLogin()">
           Login
         </button>
+      } -->
+      @if (auth.isLoggedIn) {
+        <a routerLink="/admin/dashboard" class="btn-outline btn-sm">
+          Admin
+        </a>
+        <button class="btn-outline btn-sm" (click)="auth.logout()">
+          Salir
+        </button>
+      } @else {
+        <a routerLink="/login" class="btn-primary btn-sm">
+          Login
+        </a>
       }
     </div>
 

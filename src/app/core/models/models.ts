@@ -1,6 +1,5 @@
 // src/app/core/models/models.ts
-// Interfaces que reflejan exactamente las tablas de la base de datos
-// Modelo final validado por instructor (sin tabla INVENTARIO separada)
+import { Observable } from 'rxjs';
 
 export interface Bicicleta {
   id_bicicleta: number;
@@ -9,10 +8,8 @@ export interface Bicicleta {
   modelo: string;
   tipo: 'Mountain' | 'Road' | 'Electric' | 'Gear';
   precio: number;
-  // stock_actual y stock_minimo ahora viven directo en BICICLETA (no en INVENTARIO)
   stock_actual: number;
   stock_minimo: number;
-  // Campos extra que el backend puede incluir para enriquecer la vista
   descripcion?: string;
   imagenes?: string[];
   especificaciones?: Record<string, string>;
@@ -32,6 +29,7 @@ export interface Cliente {
   documento: string;
   nombre: string;
   telefono: string;
+  rol?: 'CLIENTE' | 'ADMIN';
 }
 
 export interface Venta {
@@ -51,7 +49,6 @@ export interface DetalleVenta {
   bicicleta?: Bicicleta;
 }
 
-// ---- Compras (gestión de inventario vía compras al proveedor) ----
 export interface Compra {
   id_compra: number;
   fecha: string;
@@ -71,10 +68,17 @@ export interface DetalleCompra {
 }
 
 // ---- Auth ----
-export interface LoginRequest  { email: string; password: string; }
-export interface AuthResponse  { token: string; cliente: Cliente; }
+export interface LoginRequest    { email: string; password: string; }
+export interface RegisterRequest {
+  nombre: string;
+  documento: string;
+  telefono: string;
+  email: string;
+  password: string;
+}
+export interface AuthResponse    { token: string; cliente: Cliente; }
 
-// ---- Cart (estado local en el frontend) ----
+// ---- Cart ----
 export interface CartItem {
   bicicleta: Bicicleta;
   cantidad: number;
@@ -82,7 +86,7 @@ export interface CartItem {
   color?: string;
 }
 
-// ---- Filtros para el listado ----
+// ---- Filtros ----
 export interface BikeFilters {
   tipo?: string;
   marca?: string;
