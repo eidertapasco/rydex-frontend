@@ -1,0 +1,113 @@
+<!-- src/app/features/product-detail/product-detail.component.html -->
+
+@if (loading()) {
+  <div class="detail-loading">
+    <div class="skeleton-img"></div>
+    <div class="skeleton-info">
+      <div class="sk-line sk-short"></div>
+      <div class="sk-line sk-long"></div>
+      <div class="sk-line sk-med"></div>
+    </div>
+  </div>
+} @else if (error()) {
+  <div class="error-state">
+    <p>{{ error() }}</p>
+    <button class="btn-primary" routerLink="/mountain">Volver al catálogo</button>
+  </div>
+} @else if (bike()) {
+  <div class="detail-layout">
+
+    <!-- ===== GALERÍA IZQUIERDA ===== -->
+    <div class="gallery-col">
+      <div class="main-img-wrap">
+        <img
+          [src]="bike()!.imagenes?.[selectedImg()] || 'assets/placeholder-bike.jpg'"
+          [alt]="bike()!.modelo"
+          class="main-img" />
+        <span class="img-label">PRIMARY VIEW</span>
+      </div>
+
+      <div class="thumb-row">
+        @for (img of (bike()!.imagenes ?? []); track $index) {
+          <button class="thumb" [class.active]="selectedImg() === $index"
+                  (click)="selectedImg.set($index)">
+            <img [src]="img" [alt]="'Vista ' + ($index + 1)" />
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- ===== INFO DERECHA ===== -->
+    <div class="info-col">
+
+      <p class="new-release">
+        <span class="dot"></span> NEW RELEASE
+      </p>
+
+      <h1 class="product-title">{{ bike()!.modelo | uppercase }}</h1>
+      <p class="product-price">{{ formatPrice(bike()!.precio) }}</p>
+
+      <!-- Specs chips -->
+      <div class="specs-chips">
+        @for (spec of specs; track spec.key) {
+          <span class="chip">{{ spec.key | uppercase }}: {{ spec.value }}</span>
+        }
+        @if (specs.length === 0) {
+          <span class="chip">MARCA: {{ bike()!.marca }}</span>
+          <span class="chip">TIPO: {{ bike()!.tipo }}</span>
+        }
+      </div>
+
+      <!-- Size selector -->
+      <div class="size-section">
+        <div class="size-header">
+          <span class="size-label">SELECT SIZE</span>
+          <button class="size-guide">Size Guide</button>
+        </div>
+        <div class="size-options">
+          @for (size of sizes; track size) {
+            <button class="size-btn"
+                    [class.selected]="selectedSize() === size"
+                    (click)="selectedSize.set(size)">
+              {{ size }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- CTA buttons -->
+      <button class="btn-add-cart" (click)="addToCart()" [class.added]="addedToCart()">
+        @if (addedToCart()) {
+          ✓ ADDED TO CART
+        } @else {
+          ADD TO CART
+        }
+      </button>
+
+      <div class="secondary-actions">
+        <button class="action-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+          WISHLIST
+        </button>
+        <button class="action-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+          </svg>
+          SHARE
+        </button>
+      </div>
+
+      <!-- Engineering description -->
+      <div class="engineering">
+        <h3 class="eng-title">ENGINEERING EXCELLENCE</h3>
+        <p class="eng-text">
+          {{ bike()!.descripcion || 'Designed for those who demand absolute control on the most aggressive terrains. Features an optimized kinematic linkage and a high-modulus carbon layup for unmatched stiffness-to-weight ratio.' }}
+        </p>
+      </div>
+
+    </div>
+  </div>
+}

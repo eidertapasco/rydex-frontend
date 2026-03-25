@@ -1,0 +1,96 @@
+<!-- src/app/features/login/login.component.html -->
+<div class="login-page">
+
+  <!-- Footer -->
+  <footer class="login-footer">
+    <span class="footer-logo">
+      <span class="logo-ry">Ry</span><span class="logo-dex">dex</span>
+    </span>
+    <nav class="footer-nav">
+      <a href="#">About Us</a>
+      <a href="#">Contact</a>
+      <a href="#">Support</a>
+      <a href="#">Privacy Policy</a>
+    </nav>
+    <span class="footer-copy">© 2024 Rydex Kinetic Gallery. All rights reserved.</span>
+  </footer>
+
+  <div class="login-card">
+
+    <!-- Hero image panel -->
+    <div class="card-hero">
+      <div class="card-hero-overlay"></div>
+      <div class="card-hero-text">
+        <p class="hero-eyebrow">PERFORMANCE REDEFINED</p>
+        <h2 class="hero-headline">THE KINETIC<br/>GALLERY</h2>
+      </div>
+    </div>
+
+    <!-- Form panel -->
+    <div class="card-form">
+      <div class="form-inner">
+        <h1 class="form-title">Welcome Back</h1>
+        <p class="form-sub">Access your Rydex account to manage your rides.</p>
+
+        @if (error()) {
+          <div class="form-error">{{ error() }}</div>
+        }
+
+        <!-- Email -->
+        <div class="field-group">
+          <label class="field-label">EMAIL ADDRESS</label>
+          <input
+            class="field-input"
+            type="email"
+            placeholder="name@example.com"
+            [ngModel]="email()"
+            (ngModelChange)="email.set($event)"
+            (keydown.enter)="login()" />
+        </div>
+
+        <!-- Password -->
+        <div class="field-group">
+          <div class="field-label-row">
+            <label class="field-label">PASSWORD</label>
+            <a href="#" class="forgot-link">FORGOT?</a>
+          </div>
+          <div class="pass-wrap">
+            <input
+              class="field-input"
+              [type]="showPass() ? 'text' : 'password'"
+              placeholder="••••••••"
+              [ngModel]="password()"
+              (ngModelChange)="password.set($event)"
+              (keydown.enter)="login()" />
+            <button type="button" class="pass-toggle" (click)="togglePass()">
+              @if (showPass()) {
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                  <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                  <line x1="1" y1="1" x2="23" y2="23"/>
+                </svg>
+              } @else {
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+              }
+            </button>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <button class="btn-login" (click)="login()" [disabled]="loading()">
+          @if (loading()) { INGRESANDO... } @else { LOGIN }
+        </button>
+
+        <div class="register-link">
+          <span>New to the gallery?</span>
+          <a routerLink="/register" class="create-link">CREATE ACCOUNT</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
