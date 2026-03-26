@@ -1,0 +1,115 @@
+<!-- src/app/features/admin/purchases/purchase-form.component.html -->
+<div class="admin-page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Nueva compra</h1>
+      <p class="page-sub">Registra una compra a un proveedor</p>
+    </div>
+    <a routerLink="/admin/compras" class="btn-secondary">← Volver</a>
+  </div>
+
+  @if (error()) {
+    <div class="alert alert-error">{{ error() }}</div>
+  }
+
+  <div class="purchase-layout">
+
+    <!-- Columna izquierda: configuración -->
+    <div class="purchase-config">
+
+      <!-- Proveedor -->
+      <div class="form-card">
+        <h3 class="card-section-title">Proveedor</h3>
+        <div class="form-group">
+          <label class="form-label">Seleccionar proveedor *</label>
+          <select class="form-select"
+                  [ngModel]="idProveedorSeleccionado()"
+                  (ngModelChange)="idProveedorSeleccionado.set(+$event)">
+            <option [value]="null">-- Selecciona --</option>
+            @for (p of proveedores(); track p.id_proveedor) {
+              <option [value]="p.id_proveedor">{{ p.nombre_empresa }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <!-- Agregar bicicleta -->
+      <div class="form-card">
+        <h3 class="card-section-title">Agregar bicicleta</h3>
+        <div class="form-group">
+          <label class="form-label">Seleccionar producto</label>
+          <select class="form-select"
+                  [ngModel]="idBicicletaAAgregar()"
+                  (ngModelChange)="idBicicletaAAgregar.set(+$event)">
+            <option [value]="null">-- Selecciona --</option>
+            @for (b of bicicletas(); track b.id_bicicleta) {
+              <option [value]="b.id_bicicleta">{{ b.marca }} {{ b.modelo }}</option>
+            }
+          </select>
+        </div>
+        <button class="btn-primary" style="margin-top:12px; width:100%"
+                (click)="agregarLinea()"
+                [disabled]="!idBicicletaAAgregar()">
+          + Agregar al pedido
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Columna derecha: resumen del pedido -->
+    <div class="purchase-summary">
+      <div class="form-card">
+        <h3 class="card-section-title">Detalle del pedido</h3>
+
+        @if (lineas().length === 0) {
+          <p class="empty-lines">Agrega bicicletas desde el panel izquierdo.</p>
+        } @else {
+          <table class="inner-table" style="margin-bottom:16px">
+            <thead>
+              <tr>
+                <th>Modelo</th>
+                <th>Cant.</th>
+                <th>P. Unit.</th>
+                <th>Subtotal</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (linea of lineas(); track linea.id_bicicleta) {
+                <tr>
+                  <td>{{ linea.modelo }}</td>
+                  <td>
+                    <input class="qty-input" type="number" min="1"
+                           [ngModel]="linea.cantidad"
+                           (ngModelChange)="updateCantidad(linea.id_bicicleta, +$event)" />
+                  </td>
+                  <td>
+                    <input class="qty-input" type="number" min="0" step="0.01"
+                           [ngModel]="linea.precio_unitario"
+                           (ngModelChange)="updatePrecio(linea.id_bicicleta, +$event)" />
+                  </td>
+                  <td>{{ formatPrice(linea.subtotal) }}</td>
+                  <td>
+                    <button class="remove-line"
+                            (click)="updateCantidad(linea.id_bicicleta, 0)">✕</button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+
+          <div class="total-row">
+            <span>TOTAL COMPRA</span>
+            <span class="total-amount">{{ formatPrice(total) }}</span>
+          </div>
+
+          <button class="btn-primary" style="width:100%; margin-top:16px"
+                  (click)="guardar()" [disabled]="saving()">
+            @if (saving()) { Registrando... } @else { Registrar compra }
+          </button>
+        }
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,53 @@
+<!-- src/app/features/admin/admin-layout.component.html -->
+<div class="admin-shell">
+
+  <aside class="admin-sidebar" [class.collapsed]="sidebarCollapsed()">
+
+    <div class="sidebar-header">
+      <a routerLink="/mountain" class="sidebar-logo">
+        <span class="logo-ry">Ry</span><span class="logo-dex">dex</span>
+      </a>
+      <span class="admin-badge">ADMIN</span>
+      <!-- ✅ llama al método, no arrow function -->
+      <button class="collapse-btn" (click)="toggleSidebar()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="6"  x2="21" y2="6"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <nav class="sidebar-nav">
+      @for (item of navItems; track item.path) {
+        <a [routerLink]="item.path" routerLinkActive="active" class="nav-item">
+          <span class="nav-icon" [innerHTML]="item.icon"></span>
+          @if (!sidebarCollapsed()) {
+            <span class="nav-label">{{ item.label }}</span>
+          }
+        </a>
+      }
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-info" [class.hidden]="sidebarCollapsed()">
+        <!-- ✅ llama al método getAdminNombre() -->
+        <span class="user-name">{{ getAdminNombre() }}</span>
+        <span class="user-role">Administrador</span>
+      </div>
+      <button class="logout-btn" (click)="auth.logout()" title="Cerrar sesión">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+      </button>
+    </div>
+
+  </aside>
+
+  <main class="admin-main">
+    <router-outlet />
+  </main>
+
+</div>

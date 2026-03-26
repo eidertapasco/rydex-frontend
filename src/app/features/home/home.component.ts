@@ -82,9 +82,9 @@ export class HomeComponent implements OnInit {
 
   applyFilters(): void {
     this.filters.set({
-      marca:    this.selectedMarcas().join(','),
-      precioMin: this.precioMin(),
-      precioMax: this.precioMax()
+      marca:    this.selectedMarcas().length === 1 ? this.selectedMarcas()[0] : undefined,
+      precioMin: this.precioMin() > 0 ? this.precioMin() : undefined,
+      precioMax: this.precioMax() < 20000 ? this.precioMax() : undefined
     });
     this.loadBikes();
   }
