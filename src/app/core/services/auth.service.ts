@@ -6,12 +6,14 @@ import { Observable }                 from 'rxjs';
 import { tap }                        from 'rxjs/operators';
 import { environment }                from '../../../environments/environment';
 import { AuthResponse, Cliente, LoginRequest, RegisterRequest } from '../models/models';
+import { CartService } from '../services/cart.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private http   = inject(HttpClient);
   private router = inject(Router);
   private api    = environment.apiUrl;
+  private cart   = inject(CartService);
 
   readonly cliente = signal<Cliente | null>(this.getStoredCliente());
 
@@ -44,6 +46,7 @@ export class AuthService {
     localStorage.removeItem('rydex-token');
     localStorage.removeItem('rydex-cliente');
     this.cliente.set(null);
+    this.cart.clear();
     this.router.navigate(['/login']);
   }
 

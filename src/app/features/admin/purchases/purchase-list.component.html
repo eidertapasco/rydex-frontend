@@ -36,7 +36,7 @@
               <td class="sku">#{{ compra.id_compra }}</td>
               <td>{{ compra.fecha | date:'dd/MM/yyyy' }}</td>
               <td class="model">{{ compra.proveedor_nombre }}</td>
-              <td>{{ compra.detalles.length }} ítem(s)</td>
+              <td>{{ compra.detalles?.length ?? '-' }} ítem(s)</td>
               <td class="price">{{ formatPrice(compra.total) }}</td>
               <td>
                 <button class="action-btn" (click)="toggleExpand(compra.id_compra)">

@@ -74,19 +74,13 @@
      </button>
 
       <!-- Login / User -->
-      <!-- @if (auth.isLoggedIn) {
-        <button class="btn-outline btn-sm" (click)="auth.logout()">
-          Salir
-        </button>
-      } @else {
-        <button class="btn-primary btn-sm" (click)="goToLogin()">
-          Login
-        </button>
-      } -->
       @if (auth.isLoggedIn) {
-        <a routerLink="/admin/dashboard" class="btn-outline btn-sm">
-          Admin
-        </a>
+        @if (auth.cliente()?.rol === 'ADMIN') {
+          <a routerLink="/admin/dashboard" class="btn-outline btn-sm">
+            Admin
+          </a>
+        }
+        <span class="nav-user-name">{{ auth.cliente()?.nombre?.split(' ')?.[0] }}</span>
         <button class="btn-outline btn-sm" (click)="auth.logout()">
           Salir
         </button>

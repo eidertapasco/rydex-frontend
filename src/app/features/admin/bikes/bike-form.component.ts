@@ -41,14 +41,11 @@ export class BikeFormComponent implements OnInit {
       this.isEdit = true;
       this.loading.set(true);
       this.bikeService.getBicicleta(Number(this.id)).subscribe({
-        next: b => {
-          this.form.set({
-            sku: b.sku, marca: b.marca, modelo: b.modelo,
-            tipo: b.tipo, precio: b.precio,
-            stock_actual: b.stock_actual, stock_minimo: b.stock_minimo,
-            descripcion: b.descripcion ?? ''
+        next: () => {
+          this.saving.set(false);
+          this.router.navigateByUrl('/admin/dashboard', { skipLocationChange: true }).then(() => {
+            this.router.navigate(['/admin/bicicletas']);
           });
-          this.loading.set(false);
         },
         error: () => { this.error.set('No se pudo cargar la bicicleta.'); this.loading.set(false); }
       });

@@ -17,14 +17,22 @@ export interface DashboardMetrics {
   ingresosSemana: number;
 }
 
-export interface VentaDetallada extends Venta {
-  cliente_nombre: string;
-  detalles: DetalleVenta[];
+export interface VentaDetallada {
+  id_venta: number;
+  fecha: string;
+  total: number;
+  id_cliente?: number;
+  cliente_nombre?: string;
+  detalles?: DetalleVenta[];
 }
 
-export interface CompraDetallada extends Compra {
-  proveedor_nombre: string;
-  detalles: DetalleCompra[];
+export interface CompraDetallada {
+  id_compra: number;
+  fecha: string;
+  total: number;
+  id_proveedor?: number;
+  proveedor_nombre?: string;
+  detalles?: DetalleCompra[];
 }
 
 export interface NuevaBicicleta {
