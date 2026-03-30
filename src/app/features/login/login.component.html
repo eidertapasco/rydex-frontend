@@ -1,7 +1,12 @@
 <!-- src/app/features/login/login.component.html -->
 <div class="login-page">
 
-  <!-- Footer -->
+  <video autoplay loop muted playsinline class="page-bg-video">
+    <source src="/videos/login-bg.mp4" type="video/mp4">
+  </video>
+  <div class="page-bg-overlay"></div>
+
+  <!-- Footer Panel-->
   <footer class="login-footer">
     <span class="footer-logo">
       <span class="logo-ry">Ry</span><span class="logo-dex">dex</span>
@@ -12,12 +17,12 @@
       <a href="#">Support</a>
       <a href="#">Privacy Policy</a>
     </nav>
-    <span class="footer-copy">© 2024 Rydex Kinetic Gallery. All rights reserved.</span>
+    <span class="footer-copy">© 2026 Rydex Kinetic Gallery. All rights reserved.</span>
   </footer>
 
+  <!-- Login Panel-->
   <div class="login-card">
 
-    <!-- Hero image panel -->
     <div class="card-hero">
       <div class="card-hero-overlay"></div>
       <div class="card-hero-text">
@@ -26,7 +31,6 @@
       </div>
     </div>
 
-    <!-- Form panel -->
     <div class="card-form">
       <div class="form-inner">
         <h1 class="form-title">Welcome Back</h1>
@@ -79,7 +83,7 @@
           </div>
         </div>
 
-        <!-- Submit -->
+        <!-- Submit Form -->
         <button class="btn-login" (click)="login()" [disabled]="loading()">
           @if (loading()) { INGRESANDO... } @else { LOGIN }
         </button>
