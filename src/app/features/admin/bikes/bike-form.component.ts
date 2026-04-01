@@ -31,7 +31,7 @@ export class BikeFormComponent implements OnInit {
     sku: '', marca: '', modelo: '',
     tipo: 'Mountain', precio: 0,
     stock_actual: 0, stock_minimo: 5,
-    descripcion: ''
+    descripcion: '', imagen_url: ''
   });
 
   tipos = ['Mountain', 'Road', 'Electric', 'Gear'];
@@ -41,11 +41,20 @@ export class BikeFormComponent implements OnInit {
       this.isEdit = true;
       this.loading.set(true);
       this.bikeService.getBicicleta(Number(this.id)).subscribe({
-        next: () => {
-          this.saving.set(false);
-          this.router.navigateByUrl('/admin/dashboard', { skipLocationChange: true }).then(() => {
-            this.router.navigate(['/admin/bicicletas']);
+        next: (b: any) => {
+          // CORRECCIÓN: Llenamos el formulario con los datos en lugar de redirigir
+          this.form.set({
+            sku: b.sku || '',
+            marca: b.marca || '',
+            modelo: b.modelo || '',
+            tipo: b.tipo || 'Mountain',
+            precio: b.precio || 0,
+            stock_actual: b.stock_actual || 0,
+            stock_minimo: b.stock_minimo || 0,
+            descripcion: b.descripcion || '',
+            imagen_url: b.imagen_url || ''
           });
+          this.loading.set(false);
         },
         error: () => { this.error.set('No se pudo cargar la bicicleta.'); this.loading.set(false); }
       });
@@ -82,9 +91,13 @@ export class BikeFormComponent implements OnInit {
     obs.subscribe({
       next: () => {
         this.saving.set(false);
-        this.router.navigate(['/admin/bicicletas']);
+        // CORRECCIÓN: Forzar la recarga del componente Lista para que muestre la nueva bici
+        this.router.navigateByUrl('/admin/dashboard', { skipLocationChange: true }).then(() => {
+          this.router.navigate(['/admin/bicicletas']);
+        });
       },
-      error: () => {
+      error: (err) => {
+        console.error("Error del backend:", err);
         this.saving.set(false);
         this.error.set('Error al guardar. Verifica los datos e intenta de nuevo.');
       }

@@ -1,3 +1,4 @@
+//src/app/core/services/admin.service.ts
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -39,7 +40,7 @@ export interface NuevaBicicleta {
   sku: string; marca: string; modelo: string;
   tipo: string; precio: number;
   stock_actual: number; stock_minimo: number;
-  descripcion?: string;
+  descripcion?: string; imagen_url?: string;
 }
 
 export interface NuevaCompra {

@@ -1,3 +1,4 @@
+// src/app/features/admin/dashboard/admin-dashboard.component.ts
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink }   from '@angular/router';
@@ -33,7 +34,8 @@ export class AdminDashboardComponent implements OnInit {
     });
   }
 
-  formatCurrency(value: number): string {
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
+  formatCurrency(value: any): string {
+    const safeValue = Number(value) || 0;
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(safeValue);
   }
 }

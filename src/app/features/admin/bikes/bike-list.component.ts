@@ -25,7 +25,10 @@ export class BikeListComponent implements OnInit {
   load(): void {
     this.loading.set(true);
     this.adminService.getBicicletas().subscribe({
-      next:  res => { this.bikes.set(res.data); this.loading.set(false); },
+      next:  res => { 
+        this.bikes.set(res.data); 
+        this.loading.set(false);
+      },
       error: ()  => this.loading.set(false)
     });
   }
@@ -36,8 +39,18 @@ export class BikeListComponent implements OnInit {
   doDelete(id: number): void {
     this.deleting.set(id);
     this.adminService.deleteBicicleta(id).subscribe({
-      next:  () => { this.bikes.update(list => list.filter(b => b.id_bicicleta !== id)); this.deleting.set(null); this.confirmDelete.set(null); },
-      error: () => { this.deleting.set(null); this.confirmDelete.set(null); }
+      next:  () => { 
+        this.bikes.update(list => list.filter(b => b.id_bicicleta !== id)); 
+        this.deleting.set(null); 
+        this.confirmDelete.set(null); 
+      },
+      error: (err) => { 
+        console.error(err);
+        // CORRECCIÓN: Manejar el error de llave foránea de SQL
+        alert('No se puede eliminar. Es muy probable que esta bicicleta tenga historial de ventas o compras asociadas en el sistema.');
+        this.deleting.set(null);
+        this.confirmDelete.set(null); 
+      }
     });
   }
 

@@ -28,16 +28,27 @@
              (ngModelChange)="fechaFin.set($event)" />
     </div>
     <button class="btn-primary btn-sm" (click)="load()">Filtrar</button>
-    <button class="btn-secondary btn-sm" (click)="fechaInicio.set(''); fechaFin.set(''); load()">Limpiar</button>
+    <button class="btn-secondary btn-sm" (click)="limpiarFiltros()">Limpiar</button>
   </div>
+
+  @if (filterError()) {
+    <div style="color: #e53e3e; font-size: 0.85rem; margin-bottom: 20px; font-weight: 600;">
+      ⚠️ {{ filterError() }}
+    </div>
+  }
 
   @if (loading()) {
     <div class="table-skeleton">
       @for (i of [1,2,3,4]; track i) { <div class="row-skeleton"></div> }
     </div>
   } @else if (ventas().length === 0) {
-    <div class="empty-state">
-      <p>No hay ventas en el período seleccionado.</p>
+    <div class="empty-state" style="text-align: center; padding: 60px 20px;">
+      @if (fechaInicio() || fechaFin()) {
+        <p>No hay ventas en el período seleccionado.</p>
+      } @else {
+        <p>No hay ventas registradas aún.</p>
+        <button class="btn-primary" style="margin-top: 16px;">Registrar venta física</button>
+      }
     </div>
   } @else {
     <div class="table-wrap">
@@ -57,7 +68,7 @@
             <tr>
               <td class="sku">#{{ venta.id_venta }}</td>
               <td>{{ venta.fecha | date:'dd/MM/yyyy HH:mm' }}</td>
-              <td class="model">{{ venta.cliente_nombre ?? 'Cliente #' + venta.id_cliente }}</td>
+              <td class="model">{{ obtenerInfoCliente(venta) }}</td>
               <td class="price">{{ formatPrice(venta.total) }}</td>
               <td>{{ venta.detalles?.length ?? '-' }} ítem(s)</td>
               <td>
