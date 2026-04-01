@@ -33,6 +33,12 @@ export class HomeComponent implements OnInit {
   showCategories = signal(true);
   showPrice      = signal(true);
   showBrands     = signal(true);
+  isSidebarCollapsed = signal(false); //Controla el estado del sidebar
+
+  //Metodo para alternar el sidebar
+  toggleSidebar(): void {
+    this.isSidebarCollapsed.update(v => !v);
+  }
 
   get tipoLabel(): string {
     const labels: Record<string, string> = {
@@ -45,11 +51,23 @@ export class HomeComponent implements OnInit {
   }
 
   get heroConfig() {
-    const configs: Record<string, { text: string; sub: string; color: string }> = {
-      mountain: { text: 'UNLEASH\nGRAVITY.',    sub: 'SUMMER SERIES 2024', color: '#FF4D00' },
-      road:     { text: 'CHASE\nTHE LIMIT.',    sub: 'AERO SERIES 2024',   color: '#111111' },
-      electric: { text: 'AMPLIFY\nYOUR RIDE.',  sub: 'E-MOTION SERIES',    color: '#0062FF' },
-      gear:     { text: 'GEAR\nUP.',            sub: 'ESSENTIALS SERIES',  color: '#2D9E2D' }
+    const configs: Record<string, { text: string; sub: string; color: string; video: string }> = {
+      mountain: { 
+        text: 'UNLEASH\nGRAVITY.', sub: 'SUMMER SERIES 2026', color: '#FF4D00',
+        video: '/videos/mountain-bg.mp4' 
+      },
+      road:     { 
+        text: 'CHASE\nTHE LIMIT.',    sub: 'AERO SERIES 2026',   color: '#111111',
+        video: '/videos/road-bg.webm'
+       },
+      electric: { 
+        text: 'AMPLIFY\nYOUR RIDE.',  sub: 'E-MOTION SERIES',    color: '#2b76ef', //# 0062FF
+        video: '/videos/electric-bg.webm'
+       },
+      gear:     { 
+        text: 'GEAR\nUP.',            sub: 'ESSENTIALS SERIES',  color: '#2D9E2D',
+        video: '/videos/gear-bg.webm'
+       }
     };
     return configs[this.tipo] ?? configs['mountain'];
   }

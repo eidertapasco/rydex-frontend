@@ -15,6 +15,23 @@
   top: var(--nav-height);
   height: calc(100vh - var(--nav-height));
   overflow-y: auto;
+  overflow-x: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar > * {
+  min-width: 170px;
+  transition: opacity 0.2s;
+}
+.home-layout.sidebar-collapsed .sidebar > * {
+  opacity: 0;
+}
+
+.home-layout.sidebar-collapsed .sidebar {
+  width: 0;
+  padding: 0;
+  border-right: none;
+  opacity: 0;
 }
 
 .filter-header { margin-bottom: 24px; }
@@ -117,14 +134,26 @@
   flex-direction: column;
   justify-content: flex-end;
 }
-.hero::after {
-  content: '';
+.hero-bg-video {
   position: absolute;
-  inset: 0;
-  background: linear-gradient(120deg, rgba(0,0,0,0.3) 0%, transparent 60%);
-  pointer-events: none;
+  top: 0; 
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  opacity: 0.5;
+  mix-blend-mode: luminosity;
 }
-.hero-text { position: relative; z-index: 1; margin-bottom: 20px; }
+
+.hero-gradient-overlay {
+  position: absolute; 
+  inset: 0;
+  background: linear-gradient(90deg, rgba(17,17,17,0.95) 0%, rgba(17,17,17,0.4) 50%, transparent 100%);
+  z-index: 1;
+}
+
+.hero-text { position: relative; z-index: 2; margin-bottom: 20px; }
 .hero-sub   { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.15em; color: rgba(255,255,255,0.8); text-transform: uppercase; margin-bottom: 6px; }
 .hero-title {
   font-family: var(--font-display);
@@ -135,8 +164,9 @@
   white-space: pre-line;
   text-transform: uppercase;
 }
+
 .hero-btn {
-  position: relative; z-index: 1;
+  position: relative; z-index: 2;
   background: #fff;
   color: #111;
   font-size: 0.75rem;
@@ -160,6 +190,12 @@
 .gallery-title { font-size: 1.6rem; font-weight: 800; }
 .gallery-sub   { font-size: 0.85rem; color: var(--color-text-muted); margin-top: 2px; }
 
+.gallery-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
 .icon-btn-sm {
   width: 32px; height: 32px;
   display: flex; align-items: center; justify-content: center;
@@ -169,6 +205,16 @@
   transition: color var(--transition);
 }
 .icon-btn-sm:hover { color: var(--color-text); }
+
+.toggle-sidebar-btn {
+  background: var(--color-surface-2);
+  color: var(--color-text);
+  cursor: pointer;
+}
+.toggle-sidebar-btn:hover {
+  background: var(--color-primary);
+  color: #fff;
+}
 
 /* ---- Product Grid ---- */
 .product-grid {

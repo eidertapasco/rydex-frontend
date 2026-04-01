@@ -1,11 +1,19 @@
 <!-- src/app/features/home/home.component.html -->
-<div class="home-layout">
+<div class="home-layout" [class.sidebar-collapsed]="isSidebarCollapsed()">
 
   <!-- ============ SIDEBAR FILTROS ============ -->
   <aside class="sidebar">
-    <div class="filter-header">
-      <span class="filter-title">FILTERS</span>
-      <span class="filter-sub">Refine your ride</span>
+    <div class="filter-header" style="display: flex; justify-content: space-between; align-items: flex-start;">
+      <div>
+        <span class="filter-title">FILTERS</span>
+        <span class="filter-sub">Refine your ride</span>
+      </div>
+      <button class="icon-btn-sm toggle-sidebar-btn" (click)="toggleSidebar()" title="Ocultar Filtros" style="margin-top: -4px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
     </div>
 
     <!-- Categories -->
@@ -109,9 +117,11 @@
 
   <!-- ============ CONTENIDO PRINCIPAL ============ -->
   <div class="main-content">
-
     <!-- Hero Banner -->
     <div class="hero" [style.background-color]="heroConfig.color">
+      <video [src]="heroConfig.video" autoplay loop playsinline [muted]="true" class="hero-bg-video"></video>
+      <div class="hero-gradient-overlay"></div>
+
       <div class="hero-text">
         <p class="hero-sub">{{ heroConfig.sub }}</p>
         <h1 class="hero-title">{{ heroConfig.text }}</h1>
@@ -121,10 +131,20 @@
 
     <!-- Gallery Header -->
     <div class="gallery-header">
-      <div>
-        <h2 class="gallery-title">{{ tipoLabel }}</h2>
-        <p class="gallery-sub">Precision engineered for the most demanding trails.</p>
+      <div class="gallery-title-wrapper">
+        <button class="icon-btn-sm toggle-sidebar-btn" (click)="toggleSidebar()" title="Alternar Filtros">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+        <div>
+          <h2 class="gallery-title">{{ tipoLabel }}</h2>
+          <p class="gallery-sub">Precision engineered for the most demanding trails.</p>
+        </div>
       </div>
+
       <button class="icon-btn-sm">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="14" y2="12"/><line x1="4" y1="18" x2="10" y2="18"/>
@@ -159,7 +179,7 @@
               </span>
             }
             <div class="product-img">
-              <img [src]="bike.imagenes?.[0] || 'assets/placeholder-bike.jpg'"
+              <img [src]="bike.imagen_url || '/placeholder-bike.jpg'"
                    [alt]="bike.modelo"
                    loading="lazy" />
             </div>
@@ -175,3 +195,9 @@
 
   </div>
 </div>
+
+
+
+
+    
+ 
