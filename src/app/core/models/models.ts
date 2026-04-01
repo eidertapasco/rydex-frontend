@@ -11,6 +11,7 @@ export interface Bicicleta {
   stock_actual: number;
   stock_minimo: number;
   descripcion?: string;
+  imagen_url?: string;
   imagenes?: string[];
   especificaciones?: Record<string, string>;
   etiqueta?: 'NEW ARRIVAL' | 'LUXURY TIER' | null;

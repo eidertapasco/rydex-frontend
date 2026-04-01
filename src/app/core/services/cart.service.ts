@@ -38,17 +38,41 @@ export class CartService {
     this.saveCart();
   }
 
-  remove(id_bicicleta: number): void {
-    this.items.update(items => items.filter(i => i.bicicleta.id_bicicleta !== id_bicicleta));
-    this.saveCart();
+  remove(id_bicicleta: number, talla: string | undefined) {
+    this.items.update(items => 
+      items.filter(i => !(i.bicicleta.id_bicicleta === id_bicicleta && i.talla === talla))
+    );
   }
 
-  updateCantidad(id_bicicleta: number, cantidad: number): void {
-    if (cantidad <= 0) { this.remove(id_bicicleta); return; }
-    this.items.update(items =>
-      items.map(i => i.bicicleta.id_bicicleta === id_bicicleta ? { ...i, cantidad } : i)
-    );
-    this.saveCart();
+  updateCantidad(id_bicicleta: number, talla: string | undefined, nuevaCantidad: number) {
+    this.items.update(items => {
+      // Buscar el ítem exacto que coincida en ID y en Talla
+      const index = items.findIndex(i => i.bicicleta.id_bicicleta === id_bicicleta && i.talla === talla);
+      
+      if (index === -1) return items;
+
+      const itemActual = items[index];
+
+      // Si intenta bajar de 1, bloqueamos la acción y devolvemos la lista tal cual
+      if (nuevaCantidad < 1) {
+        return items;
+      }
+
+      // Si intenta subir más allá del stock, lo bloque
+      if (nuevaCantidad > itemActual.bicicleta.stock_actual) {
+        return items; 
+      }
+
+      if (nuevaCantidad <= 0) {
+        // Si llega a 0, filtramos para quitar SOLO ese ítem específico
+        return items.filter(i => !(i.bicicleta.id_bicicleta === id_bicicleta && i.talla === talla));
+      }
+
+      // Si pasa las validaciones, actualizamos la cantidad
+      const newItems = [...items];
+      newItems[index].cantidad = nuevaCantidad;
+      return newItems;
+    });
   }
 
   clear(): void {
