@@ -87,6 +87,15 @@ export class AdminService {
     return this.http.get<VentaDetallada[]>(`${this.api}/ventas`, { params });
   }
 
+  // ---- Clientes ----
+  getClientes(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.api}/admin/clientes`);
+  }
+
+  registrarVenta(venta: any): Observable<any> {
+    return this.http.post(`${this.api}/ventas`, venta);
+  }
+
   // ---- Compras ----
   getCompras(): Observable<CompraDetallada[]> {
     return this.http.get<CompraDetallada[]>(`${this.api}/compras`);

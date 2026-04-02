@@ -1,34 +1,44 @@
 <!-- src/app/features/admin/sales/sales-list.component.html -->
 <div class="admin-page">
-  <div class="page-header">
+  
+  <div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;">
     <div>
       <h1 class="page-title">Ventas</h1>
       <p class="page-sub">Historial completo de transacciones</p>
     </div>
+    
     @if (ventas().length > 0) {
-      <div class="total-box">
+      <div class="total-box" style="margin: 0;">
         <span class="total-label">Total filtrado</span>
         <span class="total-value">{{ formatPrice(totalGeneral()) }}</span>
       </div>
     }
   </div>
 
-  <!-- Filtros -->
-  <div class="filters-row">
-    <div class="filter-group-inline">
-      <label class="filter-label">Desde</label>
-      <input class="filter-input" type="date"
-             [ngModel]="fechaInicio()"
-             (ngModelChange)="fechaInicio.set($event)" />
+  <div class="filters-row" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
+    
+    <div style="display: flex; gap: 16px; align-items: flex-end; flex-wrap: wrap;">
+      <div class="filter-group-inline">
+        <label class="filter-label">Desde</label>
+        <input class="filter-input" type="date"
+               [ngModel]="fechaInicio()"
+               (ngModelChange)="fechaInicio.set($event)" />
+      </div>
+      <div class="filter-group-inline">
+        <label class="filter-label">Hasta</label>
+        <input class="filter-input" type="date"
+               [ngModel]="fechaFin()"
+               (ngModelChange)="fechaFin.set($event)" />
+      </div>
+      <button class="btn-primary btn-sm" (click)="load()">Filtrar</button>
+      <button class="btn-secondary btn-sm" (click)="limpiarFiltros()">Limpiar</button>
     </div>
-    <div class="filter-group-inline">
-      <label class="filter-label">Hasta</label>
-      <input class="filter-input" type="date"
-             [ngModel]="fechaFin()"
-             (ngModelChange)="fechaFin.set($event)" />
-    </div>
-    <button class="btn-primary btn-sm" (click)="load()">Filtrar</button>
-    <button class="btn-secondary btn-sm" (click)="limpiarFiltros()">Limpiar</button>
+
+    @if (ventas().length > 0) {
+      <a routerLink="/admin/ventas/nueva" class="btn-primary">
+        + Nueva Venta Física
+      </a>
+    }
   </div>
 
   @if (filterError()) {
@@ -47,7 +57,7 @@
         <p>No hay ventas en el período seleccionado.</p>
       } @else {
         <p>No hay ventas registradas aún.</p>
-        <button class="btn-primary" style="margin-top: 16px;">Registrar venta física</button>
+        <a routerLink="/admin/ventas/nueva" class="btn-primary">REGISTRAR VENTA FÍSICA</a>
       }
     </div>
   } @else {
