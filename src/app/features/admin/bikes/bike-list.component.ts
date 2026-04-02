@@ -1,9 +1,11 @@
 // src/app/features/admin/bikes/bike-list.component.ts
+// src/app/features/admin/bikes/bike-list.component.ts
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink }   from '@angular/router';
 import { AdminService } from '../../../core/services/admin.service';
 import { Bicicleta }    from '../../../core/models/models';
+import { environment }  from '../../../../environments/environment'; // <-- NUEVO
 
 @Component({
   selector: 'app-bike-list',
@@ -14,6 +16,9 @@ import { Bicicleta }    from '../../../core/models/models';
 })
 export class BikeListComponent implements OnInit {
   private adminService = inject(AdminService);
+
+  // NUEVO: Variable para la URL del servidor
+  apiUrl = environment.apiUrl.replace('/api', '');
 
   bikes   = signal<Bicicleta[]>([]);
   loading = signal(true);
@@ -46,7 +51,7 @@ export class BikeListComponent implements OnInit {
       },
       error: (err) => { 
         console.error(err);
-        // CORRECCIÓN: Manejar el error de llave foránea de SQL
+        // Manejar el error de llave foranea de SQL
         alert('No se puede eliminar. Es muy probable que esta bicicleta tenga historial de ventas o compras asociadas en el sistema.');
         this.deleting.set(null);
         this.confirmDelete.set(null); 
