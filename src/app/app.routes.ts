@@ -19,6 +19,7 @@ export const routes: Routes = [
       { path: 'bicicletas/nueva',        loadComponent: () => import('./features/admin/bikes/bike-form.component').then(m => m.BikeFormComponent) },
       { path: 'bicicletas/:id/editar',   loadComponent: () => import('./features/admin/bikes/bike-form.component').then(m => m.BikeFormComponent) },
       { path: 'ventas',      loadComponent: () => import('./features/admin/sales/sales-list.component').then(m => m.SalesListComponent) },
+      { path: 'ventas/nueva', loadComponent: () => import('./features/admin/sales/sales-form/sales-form.component').then(m => m.SalesFormComponent) },
       { path: 'compras',     loadComponent: () => import('./features/admin/purchases/purchase-list.component').then(m => m.PurchaseListComponent) },
       { path: 'compras/nueva',           loadComponent: () => import('./features/admin/purchases/purchase-form.component').then(m => m.PurchaseFormComponent) },
       { path: 'proveedores', loadComponent: () => import('./features/admin/suppliers/supplier-list.component').then(m => m.SupplierListComponent) },

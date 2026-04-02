@@ -3,11 +3,12 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule }  from '@angular/forms';
 import { AdminService, VentaDetallada } from '../../../core/services/admin.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-sales-list',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './sales-list.component.html',
   styleUrls: ['./sales-list.component.css']
 })
