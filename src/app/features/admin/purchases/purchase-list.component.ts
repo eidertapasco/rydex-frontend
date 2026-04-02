@@ -23,9 +23,24 @@ export class PurchaseListComponent implements OnInit {
   load(): void {
     this.loading.set(true);
     this.adminService.getCompras().subscribe({
-      next:  c  => { this.compras.set(c); this.loading.set(false); },
-      error: () => this.loading.set(false)
+      next:  c  => { 
+        const data = (c as any).data || c;
+        this.compras.set(Array.isArray(data) ? data : []); 
+        this.loading.set(false); 
+      },
+      error: () => {
+        this.compras.set([]);
+        this.loading.set(false);
+      }
     });
+  }
+
+  // Resuelve el nombre del proveedor si el backend lo manda en distintos formatos
+  obtenerInfoProveedor(compra: any): string {
+    if (compra.proveedor && compra.proveedor.nombre_empresa) return compra.proveedor.nombre_empresa;
+    if (compra.proveedor_nombre) return compra.proveedor_nombre;
+    if (compra.id_proveedor) return `ID Proveedor: ${compra.id_proveedor}`;
+    return 'Proveedor Desconocido';
   }
 
   toggleExpand(id: number): void {
@@ -33,10 +48,11 @@ export class PurchaseListComponent implements OnInit {
   }
 
   totalGeneral(): number {
-    return this.compras().reduce((s, c) => s + c.total, 0);
+    return this.compras().reduce((s, c) => s + (Number(c.total) || 0), 0);
   }
 
-  formatPrice(p: number): string {
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(p);
+  formatPrice(p: any): string {
+    const safeValue = Number(p) || 0;
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(safeValue);
   }
 }
