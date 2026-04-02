@@ -71,16 +71,18 @@ export class PurchaseFormComponent implements OnInit {
     this.idBicicletaAAgregar.set(null);
   }
 
-  updateCantidad(id: number, cantidad: number): void {
-    if (cantidad <= 0) {
-      this.lineas.update(list => list.filter(l => l.id_bicicleta !== id));
-      return;
-    }
+  updateCantidad(id: number, val: any): void {
+    const cantidad = Number(val) || 0; // Si borran, queda en 0 y no explota
     this.lineas.update(list => list.map(l =>
       l.id_bicicleta === id
         ? { ...l, cantidad, subtotal: cantidad * l.precio_unitario }
         : l
     ));
+  }
+
+  // Se encarga explícitamente de borrar la fila
+  removerLinea(id: number): void {
+    this.lineas.update(list => list.filter(l => l.id_bicicleta !== id));
   }
 
   updatePrecio(id: number, precio: number): void {

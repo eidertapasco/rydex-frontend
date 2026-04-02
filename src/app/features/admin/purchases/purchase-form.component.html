@@ -24,12 +24,17 @@
           <label class="form-label">Seleccionar proveedor *</label>
           <select class="form-select"
                   [ngModel]="idProveedorSeleccionado()"
-                  (ngModelChange)="idProveedorSeleccionado.set(+$event)">
-            <option [value]="null">-- Selecciona --</option>
+                  (ngModelChange)="idProveedorSeleccionado.set(+$event)"
+                  [disabled]="lineas().length > 0"> <option [value]="null">-- Selecciona --</option>
             @for (p of proveedores(); track p.id_proveedor) {
               <option [value]="p.id_proveedor">{{ p.nombre_empresa }}</option>
             }
           </select>
+          @if (lineas().length > 0) {
+            <p style="font-size: 0.7rem; color: var(--color-primary); margin-top: 6px;">
+              * Proveedor bloqueado. Termina esta compra para registrar otra a diferente proveedor.
+            </p>
+          }
         </div>
       </div>
 
@@ -81,17 +86,17 @@
                   <td>
                     <input class="qty-input" type="number" min="1"
                            [ngModel]="linea.cantidad"
-                           (ngModelChange)="updateCantidad(linea.id_bicicleta, +$event)" />
+                           (ngModelChange)="updateCantidad(linea.id_bicicleta, $event)" />
                   </td>
                   <td>
                     <input class="qty-input" type="number" min="0" step="0.01"
                            [ngModel]="linea.precio_unitario"
-                           (ngModelChange)="updatePrecio(linea.id_bicicleta, +$event)" />
+                           (ngModelChange)="updatePrecio(linea.id_bicicleta, $event)" />
                   </td>
                   <td>{{ formatPrice(linea.subtotal) }}</td>
                   <td>
                     <button class="remove-line"
-                            (click)="updateCantidad(linea.id_bicicleta, 0)">✕</button>
+                            (click)="removerLinea(linea.id_bicicleta)">✕</button>
                   </td>
                 </tr>
               }
