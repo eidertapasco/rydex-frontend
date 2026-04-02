@@ -21,7 +21,7 @@
     <div class="gallery-col">
       <div class="main-img-wrap">
         <img
-          [src]="(bike()!.imagenes && bike()!.imagenes!.length > 0) ? bike()!.imagenes![selectedImg()] : (bike()!.imagen_url || '/placeholder-bike.jpg')"
+          [src]="(bike()!.imagenes && bike()!.imagenes!.length > 0) ? (apiUrl + bike()!.imagenes![selectedImg()]) : (bike()!.imagen_url ? (apiUrl + bike()!.imagen_url) : '/placeholder-bike.jpg')"
           [alt]="bike()!.modelo"
           class="main-img" />
         <span class="img-label">PRIMARY VIEW</span>
@@ -32,14 +32,14 @@
           @for (img of bike()!.imagenes; track $index) {
             <button class="thumb" [class.active]="selectedImg() === $index"
                     (click)="selectedImg.set($index)">
-              <img [src]="img" [alt]="'Vista ' + ($index + 1)" />
+              <img [src]="apiUrl + img" [alt]="'Vista ' + ($index + 1)" />
             </button>
           }
         </div>
       } @else {
         <div class="thumb-row">
           <button class="thumb active">
-             <img [src]="bike()!.imagen_url || '/placeholder-bike.jpg'" [alt]="bike()!.modelo" />
+             <img [src]="bike()!.imagen_url ? (apiUrl + bike()!.imagen_url) : '/placeholder-bike.jpg'" [alt]="bike()!.modelo" />
           </button>
         </div>
       }

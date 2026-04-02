@@ -5,6 +5,7 @@ import { Router, RouterLink }        from '@angular/router';
 import { BikeService }   from '../../core/services/bike.service';
 import { CartService }   from '../../core/services/cart.service';
 import { Bicicleta }     from '../../core/models/models';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-product-detail',
@@ -26,6 +27,7 @@ export class ProductDetailComponent implements OnInit {
   selectedImg  = signal(0);
   selectedSize = signal('M');
   addedToCart  = signal(false);
+  apiUrl = environment.apiUrl.replace('/api', ''); // Variable para las fotos
 
   readonly sizes = ['S', 'M', 'L'];
 

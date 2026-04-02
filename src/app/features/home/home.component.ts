@@ -5,6 +5,7 @@ import { RouterLink }     from '@angular/router';
 import { FormsModule }    from '@angular/forms';
 import { BikeService }    from '../../core/services/bike.service';
 import { Bicicleta, BikeFilters } from '../../core/models/models';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-home',
@@ -34,6 +35,7 @@ export class HomeComponent implements OnInit {
   showPrice      = signal(true);
   showBrands     = signal(true);
   isSidebarCollapsed = signal(false); //Controla el estado del sidebar
+  apiUrl = environment.apiUrl.replace('/api', ''); // Variable para las fotos
 
   //Metodo para alternar el sidebar
   toggleSidebar(): void {

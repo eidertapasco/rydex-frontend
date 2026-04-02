@@ -38,7 +38,7 @@ export interface CompraDetallada {
 
 export interface NuevaBicicleta {
   sku: string; marca: string; modelo: string;
-  tipo: string; precio: number;
+  tipo: string; precio: number; precio_compra: number;
   stock_actual: number; stock_minimo: number;
   descripcion?: string; imagen_url?: string;
 }
@@ -71,6 +71,12 @@ export class AdminService {
   }
   deleteBicicleta(id: number): Observable<void> {
     return this.http.delete<void>(`${this.api}/bicicletas/${id}`);
+  }
+
+  uploadImage(file: File): Observable<{ url: string }> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<{ url: string }>(`${this.api}/media/upload`, formData);
   }
 
   // ---- Ventas ----
