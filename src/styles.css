@@ -122,3 +122,125 @@ button:disabled, .btn-primary:disabled {
   cursor: not-allowed;
   filter: grayscale(50%);
 }
+
+/* ====================================================================================
+   SISTEMA RESPONSIVE GLOBAL RYDEX (ADMIN + CLIENTE) UNA MIERDOTA PERO YA TENIA PEREZA
+   ==================================================================================== */
+
+/* --- AJUSTES PARA TABLETS (1024px hacia abajo) --- */
+@media (max-width: 1024px) {
+  /* Cuadrículas automáticas: productos, tarjetas del admin y acciones rápidas */
+  .product-grid, .metrics-grid, .actions-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)) !important;
+    gap: 16px !important;
+  }
+}
+
+/* --- AJUSTES PARA MÓVILES (768px hacia abajo) --- */
+@media (max-width: 768px) {
+  /* 1. NAVBAR: Menos espacio y ocultamos texto para dejar iconos */
+  .navbar-inner {
+    padding: 0 15px !important;
+  }
+  .nav-links {
+    display: none !important;
+  }
+  .nav-user-name {
+    display: none; /* En móvil solo se verá el icono de usuario al lado del botón Salir */
+  }
+
+  /* 2. LAYOUTS DE ADMIN: Formularios y Compras se apilan */
+  .purchase-layout, .form-container {
+    display: flex;
+    flex-direction: column !important;
+    gap: 20px;
+  }
+  .purchase-config, .purchase-summary {
+    width: 100% !important;
+  }
+
+  /* 3. TABLAS: Scroll lateral infinito (Imprescindible para el Admin) */
+  .inner-table, .admin-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid #333;
+  }
+
+  /* 4. HOME CLIENTE: Los filtros pasan a ser una CAPA SUPERIOR */
+  .home-layout {
+    display: block !important;
+    position: relative;
+  }
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -100%; /* Escondido a la izquierda */
+    width: 280px;
+    height: 100vh;
+    z-index: 9999; /* Por encima de todo */
+    background: #111 !important;
+    box-shadow: 10px 0 30px rgba(0,0,0,0.8);
+    transition: left 0.3s ease-in-out;
+    overflow-y: auto;
+  }
+  
+  /* Cuando el usuario "abre" los filtros en el Home */
+  .home-layout:not(.sidebar-collapsed) .sidebar {
+    left: 0;
+  }
+
+  .main-content {
+    margin-left: 0 !important;
+    padding: 10px !important;
+    width: 100% !important;
+  }
+
+  /* 5. HERO BANNER Y HEADERS */
+  .hero {
+    height: 250px !important;
+  }
+  .hero-title {
+    font-size: 1.8rem !important;
+  }
+  .hero-btn {
+    padding: 10px 20px !important;
+    font-size: 0.8rem !important;
+  }
+
+  /* 6. CABECERAS Y BOTONES GLOBALES */
+  .page-header {
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 15px;
+    text-align: center;
+  }
+  .btn-primary, .btn-secondary, .btn-outline {
+    width: 100%; /* Botones grandes y fáciles de tocar */
+    justify-content: center;
+  }
+
+  /* Botón flotante de filtros en la galería */
+  .gallery-header .toggle-sidebar-btn {
+    padding: 12px !important;
+    background: var(--color-primary) !important;
+    color: white !important;
+    border-radius: 8px;
+  }
+}
+
+/* --- AJUSTES PARA CELULARES PEQUEÑOS (480px hacia abajo) --- */
+@media (max-width: 480px) {
+  /* Detalle del producto a una sola columna */
+  .product-detail-container {
+    grid-template-columns: 1fr !important;
+    padding: 15px !important;
+  }
+  .metric-value {
+    font-size: 1.4rem !important;
+  }
+  .product-name {
+    font-size: 1.5rem !important;
+  }
+}
