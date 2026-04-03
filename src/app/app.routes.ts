@@ -8,6 +8,7 @@ export const routes: Routes = [
   { path: 'register', loadComponent: () => import('./features/register/register.component').then(m => m.RegisterComponent) },
   { path: 'carrito',  loadComponent: () => import('./features/cart/cart.component').then(m => m.CartComponent) },
   { path: 'producto/:id', loadComponent: () => import('./features/product-detail/product-detail.component').then(m => m.ProductDetailComponent) },
+  { path: 'mis-compras', loadComponent: () => import('./features/client/mis-compras/mis-compras.component').then(m => m.MisComprasComponent) },
   {
     path: 'admin',
     component: AdminLayoutComponent,

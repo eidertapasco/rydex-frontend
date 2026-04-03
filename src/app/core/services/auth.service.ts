@@ -58,4 +58,14 @@ export class AuthService {
     const raw = localStorage.getItem('rydex-cliente');
     return raw ? JSON.parse(raw) : null;
   }
+
+  // Obtiene el historial privado del usuario logueado
+  getMisCompras(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.api}/ventas/mis-compras`);
+  }
+
+  // Descarga la factura del cliente
+  descargarMiFactura(idVenta: number): Observable<Blob> {
+    return this.http.get(`${this.api}/ventas/${idVenta}/factura`, { responseType: 'blob' });
+  }
 }

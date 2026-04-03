@@ -1,8 +1,8 @@
 // src/app/features/admin/bikes/bike-list.component.ts
-// src/app/features/admin/bikes/bike-list.component.ts
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink }   from '@angular/router';
+import { FormsModule }  from '@angular/forms'; // <-- FormsModule para el input de búsqueda
 import { AdminService } from '../../../core/services/admin.service';
 import { Bicicleta }    from '../../../core/models/models';
 import { environment }  from '../../../../environments/environment'; // <-- NUEVO
@@ -10,7 +10,7 @@ import { environment }  from '../../../../environments/environment'; // <-- NUEV
 @Component({
   selector: 'app-bike-list',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, FormsModule],
   templateUrl: './bike-list.component.html',
   styleUrls: ['./bike-list.component.css']
 })
@@ -24,6 +24,24 @@ export class BikeListComponent implements OnInit {
   loading = signal(true);
   deleting = signal<number | null>(null);
   confirmDelete = signal<number | null>(null);
+
+  // Variables y lógica para el buscador
+
+  searchTerm = signal('');
+
+  filteredBikes = computed(() => {
+    const term = this.searchTerm().toLowerCase();
+    
+    // Si la barra está vacía, devuelve la lista original completa
+    if (!term) return this.bikes(); 
+    
+    // Si hay texto, filtra comparando con SKU, modelo o marca
+    return this.bikes().filter(b => 
+      b.sku.toLowerCase().includes(term) || 
+      b.modelo.toLowerCase().includes(term) || 
+      b.marca.toLowerCase().includes(term)
+    );
+  });
 
   ngOnInit(): void { this.load(); }
 

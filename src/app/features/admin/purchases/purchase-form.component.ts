@@ -2,8 +2,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule }  from '@angular/forms';
-import { RouterLink }   from '@angular/router';
-import { Router }       from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { AdminService, NuevaCompra } from '../../../core/services/admin.service';
 import { Proveedor, Bicicleta }      from '../../../core/models/models';
 
@@ -46,11 +45,33 @@ export class PurchaseFormComponent implements OnInit {
     });
   }
 
+  // NUEVO: Método para el Datalist del buscador inteligente
+  seleccionarBicicleta(event: any): void {
+    const textoIngresado = event.target.value;
+    
+    // Busca la bicicleta que haga match con "Marca Modelo"
+    const bikeEncontrada = this.bicicletas().find(
+      b => `${b.marca} ${b.modelo}` === textoIngresado
+    );
+
+    if (bikeEncontrada) {
+      // Configuramos el ID y la agregamos directo
+      this.idBicicletaAAgregar.set(bikeEncontrada.id_bicicleta);
+      this.agregarLinea();
+      
+      // Limpiamos el input visualmente para buscar otra
+      event.target.value = '';
+    } else {
+      this.idBicicletaAAgregar.set(null);
+    }
+  }
+
   agregarLinea(): void {
     const id = this.idBicicletaAAgregar();
     if (!id) return;
     const bike = this.bicicletas().find(b => b.id_bicicleta === id);
     if (!bike) return;
+    
     // Si ya existe la línea, incrementa cantidad
     const existe = this.lineas().find(l => l.id_bicicleta === id);
     if (existe) {
@@ -60,19 +81,20 @@ export class PurchaseFormComponent implements OnInit {
           : l
       ));
     } else {
+      // NOTA: Al comprar, sugerimos el precio de compra (costo), no el de venta
       this.lineas.update(list => [...list, {
         id_bicicleta: bike.id_bicicleta,
         modelo: bike.modelo,
         cantidad: 1,
-        precio_unitario: bike.precio,
-        subtotal: bike.precio
+        precio_unitario: bike.precio_compra || bike.precio, 
+        subtotal: bike.precio_compra || bike.precio
       }]);
     }
     this.idBicicletaAAgregar.set(null);
   }
 
   updateCantidad(id: number, val: any): void {
-    const cantidad = Number(val) || 0; // Si borran, queda en 0 y no explota
+    const cantidad = Number(val) || 0;
     this.lineas.update(list => list.map(l =>
       l.id_bicicleta === id
         ? { ...l, cantidad, subtotal: cantidad * l.precio_unitario }
@@ -80,7 +102,6 @@ export class PurchaseFormComponent implements OnInit {
     ));
   }
 
-  // Se encarga explícitamente de borrar la fila
   removerLinea(id: number): void {
     this.lineas.update(list => list.filter(l => l.id_bicicleta !== id));
   }

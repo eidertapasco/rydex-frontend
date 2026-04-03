@@ -17,14 +17,14 @@ export class AdminDashboardComponent implements OnInit {
   metrics = signal<DashboardMetrics | null>(null);
   loading = signal(true);
 
-  // Datos de respaldo mientras no hay backend
+  // Datos de respaldo actualizados
   mockMetrics: DashboardMetrics = {
-    ventasHoy: 3,
-    ingresosHoy: 18750,
-    totalBicicletas: 24,
-    stockBajo: 2,
-    ventasSemana: 15,
-    ingresosSemana: 87300
+    ventasHoy: 0,
+    ingresosTotales: 0,
+    egresosTotales: 0,
+    gananciaNeta: 0,
+    totalBicicletas: 0,
+    stockBajo: 0
   };
 
   ngOnInit(): void {
@@ -37,5 +37,23 @@ export class AdminDashboardComponent implements OnInit {
   formatCurrency(value: any): string {
     const safeValue = Number(value) || 0;
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(safeValue);
+  }
+
+  // NUEVO: Función para descargar el PDF
+  generarReportePDF(): void {
+    this.adminService.descargarReporteFinanciero().subscribe({
+      next: (blob: Blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Reporte_Financiero_Rydex.pdf`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => {
+        console.error('Error al descargar el reporte', err);
+        alert('No se pudo generar el reporte. Verifica que el backend esté corriendo.');
+      }
+    });
   }
 }

@@ -14,10 +14,8 @@
 
   <div class="purchase-layout">
 
-    <!-- Columna izquierda: configuración -->
     <div class="purchase-config">
 
-      <!-- Proveedor -->
       <div class="form-card">
         <h3 class="card-section-title">Proveedor</h3>
         <div class="form-group">
@@ -38,19 +36,19 @@
         </div>
       </div>
 
-      <!-- Agregar bicicleta -->
-      <div class="form-card">
-        <h3 class="card-section-title">Agregar bicicleta</h3>
+      <div class="form-card"> <h3 class="card-section-title">Agregar bicicleta</h3>
         <div class="form-group">
-          <label class="form-label">Seleccionar producto</label>
-          <select class="form-select"
-                  [ngModel]="idBicicletaAAgregar()"
-                  (ngModelChange)="idBicicletaAAgregar.set(+$event)">
-            <option [value]="null">-- Selecciona --</option>
-            @for (b of bicicletas(); track b.id_bicicleta) {
-              <option [value]="b.id_bicicleta">{{ b.marca }} {{ b.modelo }}</option>
+          <label>Buscar Bicicleta</label>
+          <input type="text" 
+                 class="form-input" 
+                 list="listaBicicletas" 
+                 placeholder="Escribe la marca o modelo..."
+                 (change)="seleccionarBicicleta($event)">
+          <datalist id="listaBicicletas">
+            @for (bike of bicicletas(); track bike.id_bicicleta) {
+              <option value="{{ bike.marca }} {{ bike.modelo }}"></option>
             }
-          </select>
+          </datalist>
         </div>
         <button class="btn-primary" style="margin-top:12px; width:100%"
                 (click)="agregarLinea()"
@@ -61,7 +59,6 @@
 
     </div>
 
-    <!-- Columna derecha: resumen del pedido -->
     <div class="purchase-summary">
       <div class="form-card">
         <h3 class="card-section-title">Detalle del pedido</h3>

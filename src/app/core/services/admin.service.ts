@@ -8,14 +8,16 @@ import {
   Venta, DetalleVenta, PaginatedResponse
 } from '../models/models';
 
-// Interfaces específicas del admin
+// ==========================================
+// NUEVO: Métricas actualizadas con finanzas
+// ==========================================
 export interface DashboardMetrics {
   ventasHoy: number;
-  ingresosHoy: number;
+  ingresosTotales: number;  // Todito el dinero que ha entrado
+  egresosTotales: number;   // Todito el dinero pagado a proveedores
+  gananciaNeta: number;     // Ingresos - Egresos
   totalBicicletas: number;
-  stockBajo: number;       // cuántas bicicletas están bajo stock mínimo
-  ventasSemana: number;
-  ingresosSemana: number;
+  stockBajo: number;
 }
 
 export interface VentaDetallada {
@@ -59,6 +61,11 @@ export class AdminService {
     return this.http.get<DashboardMetrics>(`${this.api}/admin/dashboard`);
   }
 
+  // NUEVO: Para descargar el reporte financiero
+  descargarReporteFinanciero(): Observable<Blob> {
+    return this.http.get(`${this.api}/admin/reporte-financiero`, { responseType: 'blob' });
+  }
+
   // ---- Bicicletas ----
   getBicicletas(): Observable<PaginatedResponse<Bicicleta>> {
     return this.http.get<PaginatedResponse<Bicicleta>>(`${this.api}/bicicletas`);
@@ -85,6 +92,10 @@ export class AdminService {
     if (fechaInicio) params = params.set('fechaInicio', fechaInicio);
     if (fechaFin)    params = params.set('fechaFin', fechaFin);
     return this.http.get<VentaDetallada[]>(`${this.api}/ventas`, { params });
+  }
+
+  descargarFactura(idVenta: number) {
+    return this.http.get(`${this.api}/ventas/${idVenta}/factura`, { responseType: 'blob' });
   }
 
   // ---- Clientes ----

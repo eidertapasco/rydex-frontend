@@ -55,6 +55,25 @@ export class SalesListComponent implements OnInit {
     });
   }
 
+  // Función para descargar la factura
+  descargarPDF(idVenta: number): void {
+    this.adminService.descargarFactura(idVenta).subscribe({
+      next: (blob: Blob) => {
+        // Creamos un link invisible en el navegador, le pegamos el PDF y lo "clickeamos"
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Factura_Rydex_${idVenta}.pdf`;
+        a.click();
+        window.URL.revokeObjectURL(url); // Limpiamos la memoria
+      },
+      error: (err) => {
+        console.error('Error al descargar la factura', err);
+        alert('No se pudo descargar la factura.');
+      }
+    });
+  }
+
   // Función para limpiar filtros y recargar
   limpiarFiltros(): void {
     this.fechaInicio.set('');
