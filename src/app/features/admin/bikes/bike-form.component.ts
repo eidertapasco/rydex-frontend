@@ -74,6 +74,17 @@ export class BikeFormComponent implements OnInit {
     this.form.update(f => ({ ...f, [field]: value }));
   }
 
+  // Se agrega " | undefined" para que TypeScript no pelee
+  getImageUrl(imagePath: string | undefined): string {
+    if (!imagePath || imagePath.includes('placeholder')) {
+      return '/placeholder-bike.png'; 
+    }
+    if (imagePath.startsWith('http')) {
+      return imagePath; 
+    }
+    return `${this.apiUrl}${imagePath}`; 
+  }
+
   // Función que se dispara cuando el usuario elige una foto
   onFileSelected(event: any): void {
     const file: File = event.target.files[0];
