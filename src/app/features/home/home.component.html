@@ -179,7 +179,7 @@
               </span>
             }
             <div class="product-img">
-              <img [src]="bike.imagen_url ? (apiUrl + bike.imagen_url) : '/placeholder-bike.jpg'"
+              <img [src]="bike.imagen_url && bike.imagen_url.startsWith('http') ? bike.imagen_url : '/placeholder-bike.jpg'"
                    [alt]="bike.modelo"
                    loading="lazy" />
             </div>
