@@ -1,11 +1,14 @@
 // src/environments/environment.ts
-// Cambia apiUrl según la URL de mi backend aqui es local
-/*export const environment = {
+
+// Usar esta para PRUEBAS LOCALES
+/*
+export const environment = {
   production: false,
   apiUrl: 'http://localhost:8080/api'
-};*/
+};
+*/
 
-//Para conectarlo con el backend en la nube
+// Usar esta en PRODUCCION (Render)
 export const environment = {
   production: false,
   apiUrl: 'https://rydex-api.onrender.com/api' 

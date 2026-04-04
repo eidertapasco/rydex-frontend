@@ -28,10 +28,11 @@ export class CartComponent {
   checkingOut  = signal(false);
   orderError   = signal<string | null>(null);
   orderSuccess = signal(false);
+  direccionEnvio = signal('');
 
   applyPromo(): void {
-    // Lógica simplificada: solo acepta RYDEX-2024
-    if (this.promoCode().toUpperCase() === 'RYDEX-2024') {
+    // Lógica simplificada: solo acepta RYDEX-2026
+    if (this.promoCode().toUpperCase() === 'RYDEX-2026') {
       this.promoApplied.set(true);
     }
   }
@@ -51,6 +52,12 @@ export class CartComponent {
       return;
     }
 
+    // Validamos que haya puesto una dirección
+    if (this.direccionEnvio().trim() === '') {
+      this.orderError.set('Por favor, ingresa una dirección de envío.');
+      return;
+    }
+
     this.checkingOut.set(true);
     this.orderError.set(null);
 
@@ -58,6 +65,7 @@ export class CartComponent {
     const payload = {
       id_cliente: this.auth.cliente()!.id_cliente,
       total:      this.finalTotal,
+      direccion_envio: this.direccionEnvio(),
       detalles:   this.cart.items().map(i => ({
         id_bicicleta:    i.bicicleta.id_bicicleta,
         cantidad:        i.cantidad,
