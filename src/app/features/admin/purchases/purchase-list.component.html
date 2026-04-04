@@ -5,7 +5,9 @@
       <h1 class="page-title">Compras</h1>
       <p class="page-sub">Historial de compras a proveedores</p>
     </div>
-    <a routerLink="/admin/compras/nueva" class="btn-primary">+ Nueva compra</a>
+    @if (compras().length > 0) {
+      <a routerLink="/admin/compras/nueva" class="btn-primary">+ Nueva compra</a>
+    }
   </div>
 
   @if (loading()) {
@@ -35,8 +37,8 @@
             <tr>
               <td class="sku">#{{ compra.id_compra }}</td>
               <td>{{ compra.fecha | date:'dd/MM/yyyy' }}</td>
-              <td class="model">{{ compra.proveedor_nombre }}</td>
-              <td>{{ compra.detalles.length }} ítem(s)</td>
+              <td class="model">{{ obtenerInfoProveedor(compra) }}</td>
+              <td>{{ compra.detalles?.length ?? '-' }} ítem(s)</td>
               <td class="price">{{ formatPrice(compra.total) }}</td>
               <td>
                 <button class="action-btn" (click)="toggleExpand(compra.id_compra)">

@@ -57,10 +57,17 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label">Precio (USD) *</label>
+          <label class="form-label">Precio de Venta Público (USD) *</label>
           <input class="form-input" type="number" min="0" step="0.01"
                  [ngModel]="form().precio"
                  (ngModelChange)="updateField('precio', +$event)" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Precio de Compra Costo (USD) *</label>
+          <input class="form-input" type="number" min="0" step="0.01"
+                 [ngModel]="form().precio_compra"
+                 (ngModelChange)="updateField('precio_compra', +$event)" />
         </div>
 
         <div class="form-group">
@@ -75,6 +82,39 @@
           <input class="form-input" type="number" min="0"
                  [ngModel]="form().stock_minimo"
                  (ngModelChange)="updateField('stock_minimo', +$event)" />
+        </div>
+
+        <div class="form-group full">
+          <label class="form-label">Imagen del Producto</label>
+          
+          <div style="display: flex; gap: 16px; align-items: flex-start; margin-top: 8px;">
+            @if (form().imagen_url) {
+              <div style="width: 120px; height: 120px; border-radius: 8px; overflow: hidden; border: 1px solid var(--color-border); background-color: var(--color-bg);">
+                <img [src]="apiUrl + form().imagen_url" alt="Preview" style="width: 100%; height: 100%; object-fit: contain;">
+              </div>
+            } @else {
+              <div style="width: 120px; height: 120px; border-radius: 8px; border: 1px dashed var(--color-border); display: flex; align-items: center; justify-content: center; background-color: var(--color-bg); color: var(--color-text-muted); font-size: 0.8rem; text-align: center; padding: 10px;">
+                Sin imagen
+              </div>
+            }
+
+            <div style="flex: 1;">
+              <input type="file" 
+                     accept="image/png, image/jpeg, image/webp" 
+                     (change)="onFileSelected($event)" 
+                     style="display: none;" 
+                     #fileInput>
+              
+              <button type="button" class="btn-secondary" (click)="fileInput.click()" [disabled]="uploadingImage()">
+                @if (uploadingImage()) { Subiendo... } @else { Seleccionar foto }
+              </button>
+              
+              <p style="font-size: 0.75rem; color: var(--color-text-muted); margin-top: 8px;">
+                Formatos recomendados: JPG, PNG, WEBP. Tamaño máximo: 5MB.<br>
+                <strong>Ruta actual:</strong> {{ form().imagen_url || 'Ninguna' }}
+              </p>
+            </div>
+          </div>
         </div>
 
         <div class="form-group full">

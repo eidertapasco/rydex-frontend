@@ -1,0 +1,114 @@
+<!-- src/app/features/admin/sales/sales-form/sales-form.component.html -->
+<div class="admin-page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Punto de Venta (POS)</h1>
+      <p class="page-sub">Registra una venta física de mostrador</p>
+    </div>
+    <a routerLink="/admin/ventas" class="btn-secondary">← Volver a Ventas</a>
+  </div>
+
+  @if (error()) {
+    <div class="alert alert-error">{{ error() }}</div>
+  }
+
+  <div class="pos-layout" style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px; align-items: start; margin-top: 20px;">
+    
+    <div class="pos-catalog form-card" style="min-height: 500px;">
+      <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Productos</h2>
+      
+      <div class="form-group">
+        <input class="form-input" type="text" placeholder="Buscar por SKU, Modelo o Marca..." 
+               [ngModel]="searchTerm()" (ngModelChange)="searchTerm.set($event)" 
+               style="font-size: 1.1rem; padding: 12px; border-radius: 8px;">
+      </div>
+
+      <div class="catalog-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-top: 16px; max-height: 600px; overflow-y: auto; padding-right: 8px;">
+        @for (bike of filteredBikes(); track bike.id_bicicleta) {
+          <div class="product-item" 
+               style="border: 1px solid var(--color-border); border-radius: 8px; padding: 12px; cursor: pointer; transition: all 0.2s;"
+               [style.opacity]="bike.stock_actual === 0 ? '0.5' : '1'"
+               (click)="addToCart(bike)">
+            
+            <span style="font-size: 0.75rem; color: var(--color-text-muted); font-weight: 600;">{{ bike.sku }}</span>
+            <h3 style="font-size: 1rem; margin: 4px 0;">{{ bike.marca }} {{ bike.modelo }}</h3>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+              <span style="color: var(--color-primary); font-weight: 700;">{{ formatPrice(bike.precio) }}</span>
+              <span style="font-size: 0.8rem;" [style.color]="bike.stock_actual > 0 ? '#2D9E2D' : '#e53e3e'">
+                Stock: {{ bike.stock_actual }}
+              </span>
+            </div>
+          </div>
+        }
+        @if (filteredBikes().length === 0 && !loading()) {
+          <p style="color: var(--color-text-muted); grid-column: 1 / -1; text-align: center; padding: 20px;">No se encontraron productos.</p>
+        }
+      </div>
+    </div>
+
+    <div class="pos-cart form-card" style="position: sticky; top: 20px;">
+      <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Ticket de Venta</h2>
+
+      <div class="form-group">
+        <label class="form-label">Cliente *</label>
+        <select class="form-select" [ngModel]="selectedClienteId()" (ngModelChange)="selectedClienteId.set($event)">
+          <option [ngValue]="null" disabled>-- Selecciona un cliente --</option>
+          @for (cliente of clientes(); track cliente.id_cliente) {
+            <option [ngValue]="cliente.id_cliente">{{ cliente.nombre }} ({{ cliente.email }})</option>
+          }
+        </select>
+        <p style="font-size: 0.75rem; color: var(--color-text-muted); margin-top: 4px;">Asegúrate de que el cliente exista en la base de datos.</p>
+      </div>
+
+      <hr style="border: none; border-top: 1px dashed var(--color-border); margin: 20px 0;">
+
+      <div class="cart-items" style="min-height: 200px; max-height: 300px; overflow-y: auto;">
+        @for (item of cart(); track item.bicicleta.id_bicicleta; let i = $index) {
+          <div class="cart-item" style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--color-border);">
+            
+            <div style="flex: 1;">
+              <p style="font-size: 0.9rem; font-weight: 600; margin: 0;">{{ item.bicicleta.modelo }}</p>
+              <p style="font-size: 0.8rem; color: var(--color-text-muted); margin: 0;">{{ formatPrice(item.bicicleta.precio) }} c/u</p>
+            </div>
+
+            <div class="qty-ctrl" style="display: flex; align-items: center; gap: 8px; background: var(--color-bg); padding: 4px; border-radius: 4px; border: 1px solid var(--color-border);">
+              <button type="button" style="background:none; border:none; cursor:pointer; font-weight:bold; padding: 0 8px; color: var(--color-text); font-size: 1.2rem;" (click)="updateQty(i, -1)">−</button>
+              
+              <span style="font-size: 1rem; min-width: 20px; text-align: center; color: var(--color-text);">{{ item.cantidad }}</span>
+              
+              <button type="button" style="background:none; border:none; cursor:pointer; font-weight:bold; padding: 0 8px; color: var(--color-text); font-size: 1.2rem;" (click)="updateQty(i, 1)">+</button>
+            </div>
+
+            <div style="text-align: right; min-width: 90px; padding-left: 16px;">
+              <p style="font-size: 0.9rem; font-weight: 600; margin: 0;">{{ formatPrice(item.subtotal) }}</p>
+            </div>
+          </div>
+        }
+        @if (cart().length === 0) {
+          <p style="color: var(--color-text-muted); text-align: center; margin-top: 40px; font-size: 0.9rem;">El carrito está vacío</p>
+        }
+      </div>
+
+      <div class="cart-totals" style="margin-top: 20px; background: var(--color-bg); padding: 16px; border-radius: 8px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <span style="font-size: 1.2rem; font-weight: 700;">TOTAL</span>
+          <span style="font-size: 1.5rem; color: var(--color-primary); font-weight: 800;">{{ formatPrice(cartTotal()) }}</span>
+        </div>
+
+        @if (submitAttempted() && (!selectedClienteId() || cart().length === 0)) {
+          <div style="color: #e53e3e; font-size: 0.85rem; margin-bottom: 12px; font-weight: 600; text-align: center;">
+            ⚠️ Selecciona un cliente y añade al menos un producto para cobrar.
+          </div>
+        }
+
+        <button type="button" class="btn-primary" style="width: 100%; padding: 16px; font-size: 1.1rem;" 
+                (click)="procesarVenta($event)" 
+                [disabled]="saving()">
+          @if (saving()) { Procesando... } @else { 💳 COBRAR Y REGISTRAR }
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

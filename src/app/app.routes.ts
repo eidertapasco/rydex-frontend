@@ -8,6 +8,7 @@ export const routes: Routes = [
   { path: 'register', loadComponent: () => import('./features/register/register.component').then(m => m.RegisterComponent) },
   { path: 'carrito',  loadComponent: () => import('./features/cart/cart.component').then(m => m.CartComponent) },
   { path: 'producto/:id', loadComponent: () => import('./features/product-detail/product-detail.component').then(m => m.ProductDetailComponent) },
+  { path: 'mis-compras', loadComponent: () => import('./features/client/mis-compras/mis-compras.component').then(m => m.MisComprasComponent) },
   {
     path: 'admin',
     component: AdminLayoutComponent,
@@ -19,6 +20,7 @@ export const routes: Routes = [
       { path: 'bicicletas/nueva',        loadComponent: () => import('./features/admin/bikes/bike-form.component').then(m => m.BikeFormComponent) },
       { path: 'bicicletas/:id/editar',   loadComponent: () => import('./features/admin/bikes/bike-form.component').then(m => m.BikeFormComponent) },
       { path: 'ventas',      loadComponent: () => import('./features/admin/sales/sales-list.component').then(m => m.SalesListComponent) },
+      { path: 'ventas/nueva', loadComponent: () => import('./features/admin/sales/sales-form/sales-form.component').then(m => m.SalesFormComponent) },
       { path: 'compras',     loadComponent: () => import('./features/admin/purchases/purchase-list.component').then(m => m.PurchaseListComponent) },
       { path: 'compras/nueva',           loadComponent: () => import('./features/admin/purchases/purchase-form.component').then(m => m.PurchaseFormComponent) },
       { path: 'proveedores', loadComponent: () => import('./features/admin/suppliers/supplier-list.component').then(m => m.SupplierListComponent) },

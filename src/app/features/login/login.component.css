@@ -1,7 +1,12 @@
 /* src/app/features/login/login.component.css */
+/* src/app/features/login/login.component.css */
+
 .login-page {
+  /*Se añade position y overflow para contener el video absoluto.*/
+  position: relative;
+  overflow: hidden; 
   min-height: calc(100vh - var(--nav-height));
-  background: var(--color-bg);
+  /* background: var(--color-bg); */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -10,8 +15,32 @@
   gap: 32px;
 }
 
+/* ==========================================================================
+  Clases para controlar el video de fondo y su capa oscura (overlay)
+   ========================================================================== */
+.page-bg-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Asegura que el video cubra toda la pantalla sin deformarse */
+  z-index: 0; /* Lo empuja al fondo absoluto */
+}
+
+.page-bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(17, 17, 17, 0.75); /* Capa oscura (75% opacidad) para que la tarjeta siga siendo legible */
+  z-index: 1; /* Va justo encima del video */
+}
+
 /* Card split */
 .login-card {
+  /* AÑADIDO: position y z-index para asegurar que la tarjeta flote por encima del video y el overlay */
+  position: relative;
+  z-index: 2; 
+
   display: grid;
   grid-template-columns: 420px 400px;
   border-radius: 18px;
@@ -166,6 +195,10 @@
 
 /* Footer */
 .login-footer {
+  /* AÑADIDO: position y z-index para asegurar que el footer flote por encima del video y el overlay */
+  position: relative;
+  z-index: 2;
+
   display: flex;
   align-items: center;
   gap: 24px;

@@ -1,3 +1,4 @@
+//src/app/core/services/admin.service.ts
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -7,31 +8,41 @@ import {
   Venta, DetalleVenta, PaginatedResponse
 } from '../models/models';
 
-// Interfaces específicas del admin
+// ==========================================
+// NUEVO: Métricas actualizadas con finanzas
+// ==========================================
 export interface DashboardMetrics {
   ventasHoy: number;
-  ingresosHoy: number;
+  ingresosTotales: number;  // Todito el dinero que ha entrado
+  egresosTotales: number;   // Todito el dinero pagado a proveedores
+  gananciaNeta: number;     // Ingresos - Egresos
   totalBicicletas: number;
-  stockBajo: number;       // cuántas bicicletas están bajo stock mínimo
-  ventasSemana: number;
-  ingresosSemana: number;
+  stockBajo: number;
 }
 
-export interface VentaDetallada extends Venta {
-  cliente_nombre: string;
-  detalles: DetalleVenta[];
+export interface VentaDetallada {
+  id_venta: number;
+  fecha: string;
+  total: number;
+  id_cliente?: number;
+  cliente_nombre?: string;
+  detalles?: DetalleVenta[];
 }
 
-export interface CompraDetallada extends Compra {
-  proveedor_nombre: string;
-  detalles: DetalleCompra[];
+export interface CompraDetallada {
+  id_compra: number;
+  fecha: string;
+  total: number;
+  id_proveedor?: number;
+  proveedor_nombre?: string;
+  detalles?: DetalleCompra[];
 }
 
 export interface NuevaBicicleta {
   sku: string; marca: string; modelo: string;
-  tipo: string; precio: number;
+  tipo: string; precio: number; precio_compra: number;
   stock_actual: number; stock_minimo: number;
-  descripcion?: string;
+  descripcion?: string; imagen_url?: string;
 }
 
 export interface NuevaCompra {
@@ -50,6 +61,11 @@ export class AdminService {
     return this.http.get<DashboardMetrics>(`${this.api}/admin/dashboard`);
   }
 
+  // NUEVO: Para descargar el reporte financiero
+  descargarReporteFinanciero(): Observable<Blob> {
+    return this.http.get(`${this.api}/admin/reporte-financiero`, { responseType: 'blob' });
+  }
+
   // ---- Bicicletas ----
   getBicicletas(): Observable<PaginatedResponse<Bicicleta>> {
     return this.http.get<PaginatedResponse<Bicicleta>>(`${this.api}/bicicletas`);
@@ -64,12 +80,31 @@ export class AdminService {
     return this.http.delete<void>(`${this.api}/bicicletas/${id}`);
   }
 
+  uploadImage(file: File): Observable<{ url: string }> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<{ url: string }>(`${this.api}/media/upload`, formData);
+  }
+
   // ---- Ventas ----
   getVentas(fechaInicio?: string, fechaFin?: string): Observable<VentaDetallada[]> {
     let params = new HttpParams();
     if (fechaInicio) params = params.set('fechaInicio', fechaInicio);
     if (fechaFin)    params = params.set('fechaFin', fechaFin);
     return this.http.get<VentaDetallada[]>(`${this.api}/ventas`, { params });
+  }
+
+  descargarFactura(idVenta: number) {
+    return this.http.get(`${this.api}/ventas/${idVenta}/factura`, { responseType: 'blob' });
+  }
+
+  // ---- Clientes ----
+  getClientes(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.api}/admin/clientes`);
+  }
+
+  registrarVenta(venta: any): Observable<any> {
+    return this.http.post(`${this.api}/ventas`, venta);
   }
 
   // ---- Compras ----

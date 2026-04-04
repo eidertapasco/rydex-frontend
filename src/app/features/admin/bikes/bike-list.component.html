@@ -1,13 +1,28 @@
 <!-- src/app/features/admin/bikes/bike-list.component.html -->
 <div class="admin-page">
-  <div class="page-header">
+  <div class="page-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
     <div>
       <h1 class="page-title">Bicicletas</h1>
       <p class="page-sub">Gestión del catálogo de productos</p>
     </div>
-    <a routerLink="/admin/bicicletas/nueva" class="btn-primary">
-      + Nueva bicicleta
-    </a>
+    
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <div class="search-box" style="position: relative;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--color-text-muted);">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" class="form-input" 
+               placeholder="Buscar por SKU, Modelo..." 
+               [ngModel]="searchTerm()" 
+               (ngModelChange)="searchTerm.set($event)"
+               style="padding-left: 36px; min-width: 280px;">
+      </div>
+
+      <a routerLink="/admin/bicicletas/nueva" class="btn-primary">
+        + Nueva bicicleta
+      </a>
+    </div>
   </div>
 
   @if (loading()) {
@@ -37,7 +52,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (bike of bikes(); track bike.id_bicicleta) {
+          @for (bike of filteredBikes(); track bike.id_bicicleta) {
             <tr [class.row-warning]="stockStatus(bike) === 'low'"
                 [class.row-danger]="stockStatus(bike) === 'out'">
               <td class="sku">{{ bike.sku }}</td>
@@ -83,6 +98,14 @@
                     Eliminar
                   </button>
                 }
+              </td>
+            </tr>
+          }
+
+          @if (filteredBikes().length === 0 && bikes().length > 0) {
+            <tr>
+              <td colspan="8" style="text-align: center; padding: 40px; color: var(--color-text-muted);">
+                No se encontraron bicicletas que coincidan con "{{ searchTerm() }}"
               </td>
             </tr>
           }
