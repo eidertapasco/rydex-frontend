@@ -39,6 +39,8 @@ export interface Venta {
   fecha: string;
   total: number;
   id_cliente: number;
+  direccion_envio?: string;
+  detalles?: DetalleVenta[];
 }
 
 export interface DetalleVenta {

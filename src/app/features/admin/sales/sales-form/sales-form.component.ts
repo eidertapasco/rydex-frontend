@@ -30,15 +30,26 @@ export class SalesFormComponent implements OnInit {
   // Estado del POS
   cart = signal<CartItem[]>([]);
   searchTerm = signal('');
+  
+  // --- NUEVOS CAMPOS PARA EL CLIENTE ---
+  isNewClient = signal(false); // Toggle: false = Existente, true = Nuevo
   selectedClienteId = signal<number | null>(null);
+  
+  newClientNombre = signal('');
+  newClientDocumento = signal('');
+  newClientTelefono = signal('');
+  newClientEmail = signal('');
+  direccionEnvio = signal(''); // Para envío físico (Opcional)
+  
+  clientSearchTerm = signal('');
+  showClientDropdown = signal(false);
   
   // UI States
   loading = signal(true);
   saving = signal(false);
   error = signal<string | null>(null);
-  submitAttempted = signal(false); // <-- AÑADIDO: Controla el mensaje rojo
+  submitAttempted = signal(false);
 
-  // Buscador reactivo: filtra bicis por SKU, marca o modelo
   filteredBikes = computed(() => {
     const term = this.searchTerm().toLowerCase();
     return this.bicicletas().filter(b => 
@@ -48,13 +59,35 @@ export class SalesFormComponent implements OnInit {
     );
   });
 
-  // Calcula el total del carrito
+  filteredClientes = computed(() => {
+    const term = this.clientSearchTerm().toLowerCase();
+    if (!term) return []; 
+    return this.clientes().filter(c => {
+      const nombreValido = c.nombre ? c.nombre.toLowerCase() : '';
+      const docValido = c.documento ? c.documento.toLowerCase() : '';
+      return nombreValido.includes(term) || docValido.includes(term);
+    });
+  });
+
+  updateClientSearch(term: string) {
+    this.clientSearchTerm.set(term);
+    this.showClientDropdown.set(true);
+    this.selectedClienteId.set(null); 
+  }
+
+  selectClient(cliente: any) {
+    this.selectedClienteId.set(cliente.id_cliente);
+    // Extraemos el documento de forma segura
+    const doc = cliente.documento ? cliente.documento : 'Sin Cédula';
+    this.clientSearchTerm.set(`${cliente.nombre} (${doc})`);
+    this.showClientDropdown.set(false);
+  }
+
   cartTotal = computed(() => {
     return this.cart().reduce((sum, item) => sum + item.subtotal, 0);
   });
 
   ngOnInit(): void {
-    // Cargar bicicletas y clientes en paralelo
     this.adminService.getBicicletas().subscribe(res => {
       this.bicicletas.set(res.data);
       this.loading.set(false);
@@ -75,7 +108,7 @@ export class SalesFormComponent implements OnInit {
     this.cart.update(currentCart => {
       const existing = currentCart.find(i => i.bicicleta.id_bicicleta === bike.id_bicicleta);
       if (existing) {
-        if (existing.cantidad >= bike.stock_actual) return currentCart; // Límite de stock
+        if (existing.cantidad >= bike.stock_actual) return currentCart;
         existing.cantidad += 1;
         existing.subtotal = existing.cantidad * bike.precio;
         return [...currentCart];
@@ -94,10 +127,10 @@ export class SalesFormComponent implements OnInit {
       const newQty = item.cantidad + delta;
       
       if (newQty <= 0) {
-        return current.filter((_, i) => i !== index); // Elimina si baja a 0
+        return current.filter((_, i) => i !== index);
       }
       if (newQty > item.bicicleta.stock_actual) {
-        return current; // No permite superar el stock
+        return current;
       }
       
       item.cantidad = newQty;
@@ -111,23 +144,24 @@ export class SalesFormComponent implements OnInit {
   }
 
   procesarVenta(event?: Event): void {
-    if (event) {
-      event.preventDefault(); // Detiene la recarga brusca
-    }
+    if (event) event.preventDefault();
+    this.submitAttempted.set(true);
 
-    this.submitAttempted.set(true); // Marca que el admin intentó cobrar
-
-    if (!this.selectedClienteId() || this.cart().length === 0) {
-      // Retornamos sin hacer nada, el HTML mostrará la alerta roja gracias a submitAttempted
-      return;
+    // --- NUEVA VALIDACIÓN INTELIGENTE ---
+    if (this.cart().length === 0) return;
+    
+    if (!this.isNewClient() && !this.selectedClienteId()) return; // Si es existente, debe elegir uno
+    
+    if (this.isNewClient() && (!this.newClientNombre() || !this.newClientDocumento())) {
+        return; // Si es nuevo, mínimo nombre y documento
     }
+    // ------------------------------------
 
     this.saving.set(true);
     this.error.set(null);
 
-    // CORRECCIÓN CRÍTICA: Propiedades idénticas a los @JsonProperty de Java
-    const request = {
-      id_cliente: Number(this.selectedClienteId()), 
+    // Preparamos el payload base
+    const request: any = {
       total: this.cartTotal(),
       detalles: this.cart().map(item => ({
         id_bicicleta: item.bicicleta.id_bicicleta,
@@ -136,6 +170,24 @@ export class SalesFormComponent implements OnInit {
         subtotal: item.subtotal
       }))
     };
+
+    // Agregamos la dirección si la escribió
+    if (this.direccionEnvio().trim() !== '') {
+        request.direccion_envio = this.direccionEnvio();
+    }
+
+    // --- Enviar ID o Enviar Datos Nuevos ---
+    if (this.isNewClient()) {
+        request.nuevo_cliente_nombre = this.newClientNombre();
+        request.nuevo_cliente_documento = this.newClientDocumento();
+        request.nuevo_cliente_telefono = this.newClientTelefono();
+        if (this.newClientEmail().trim() !== '') {
+            request.nuevo_cliente_email = this.newClientEmail();
+        }
+    } else {
+        request.id_cliente = Number(this.selectedClienteId());
+    }
+    // ------------------Esto es para validar que si envie la request----------------------------
 
     console.log("Enviando esta venta a Spring Boot:", request);
 
@@ -146,7 +198,7 @@ export class SalesFormComponent implements OnInit {
       },
       error: (err) => {
         console.error("¡Error devuelto por el servidor!", err);
-        this.error.set('Error al procesar la venta. Revisa la consola (F12) para más detalles.');
+        this.error.set('Error al procesar la venta.'); // Revisar la consola (F12) para más detalles.
         this.saving.set(false);
       }
     });
