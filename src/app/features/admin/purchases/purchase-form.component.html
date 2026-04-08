@@ -22,15 +22,16 @@
           <label class="form-label">Seleccionar proveedor *</label>
           <select class="form-select"
                   [ngModel]="idProveedorSeleccionado()"
-                  (ngModelChange)="idProveedorSeleccionado.set(+$event)"
-                  [disabled]="lineas().length > 0"> <option [value]="null">-- Selecciona --</option>
-            @for (p of proveedores(); track p.id_proveedor) {
-              <option [value]="p.id_proveedor">{{ p.nombre_empresa }}</option>
+                  (ngModelChange)="idProveedorSeleccionado.set($event)"
+                  [disabled]="lineas().length > 0 && idProveedorSeleccionado() !== null">
+            <option [ngValue]="null">— Selecciona —</option>
+            @for (prov of proveedores(); track prov.id_proveedor) {
+              <option [value]="prov.id_proveedor">{{ prov.nombre_empresa }}</option>
             }
           </select>
-          @if (lineas().length > 0) {
-            <p style="font-size: 0.7rem; color: var(--color-primary); margin-top: 6px;">
-              * Proveedor bloqueado. Termina esta compra para registrar otra a diferente proveedor.
+          @if (lineas().length > 0 && idProveedorSeleccionado() !== null) {
+            <p class="text-error" style="font-size: 0.75rem; color: #ef4444; margin-top: 8px;">
+              * Proveedor bloqueado. Termina esta compra o vacía el carrito para cambiar de proveedor.
             </p>
           }
         </div>
