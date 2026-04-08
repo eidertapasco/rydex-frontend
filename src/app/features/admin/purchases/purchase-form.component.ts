@@ -2,7 +2,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule }  from '@angular/forms';
-import { RouterLink, Router } from '@angular/router';
+import { RouterLink, Router, ActivatedRoute } from '@angular/router'; // ActivatedRoute para agregar en automatico la bicicleta
 import { AdminService, NuevaCompra } from '../../../core/services/admin.service';
 import { Proveedor, Bicicleta }      from '../../../core/models/models';
 
@@ -24,6 +24,7 @@ interface LineaCompra {
 export class PurchaseFormComponent implements OnInit {
   private adminService = inject(AdminService);
   private router       = inject(Router);
+  private route        = inject(ActivatedRoute); // <-- Para leer los parámetros de la URL
 
   proveedores = signal<Proveedor[]>([]);
   bicicletas  = signal<Bicicleta[]>([]);
@@ -36,16 +37,44 @@ export class PurchaseFormComponent implements OnInit {
   idBicicletaAAgregar     = signal<number | null>(null);
 
   ngOnInit(): void {
+    // 1. Cargar proveedores
     this.adminService.getProveedores().subscribe({
       next: p => this.proveedores.set(p)
     });
+
+    // 2. Cargar bicicletas
     this.adminService.getBicicletas().subscribe({
-      next:  res => { this.bicicletas.set(res.data); this.loading.set(false); },
+      next:  res => { 
+        this.bicicletas.set(res.data); 
+        this.loading.set(false); 
+        
+        // --- NUEVA LÓGICA DE AUTO-SELECCIÓN ---
+        // Se ejecuta AQUÍ adentro porque necesitamos asegurar que 
+        // la lista de bicicletas ya esté cargada antes de intentar buscar una.
+        this.revisarParametrosDeURL();
+      },
       error: ()  => this.loading.set(false)
     });
   }
 
-  // NUEVO: Método para el Datalist del buscador inteligente
+  // NUEVO: Método para leer la URL y auto-seleccionar
+  private revisarParametrosDeURL(): void {
+    this.route.queryParams.subscribe(params => {
+      const bikeIdToOrder = params['bikeId'];
+      
+      if (bikeIdToOrder) {
+        const idNumerico = Number(bikeIdToOrder);
+        // Usamos el ID que viene de la URL para configurarlo como si 
+        // el usuario lo hubiera seleccionado manualmente.
+        this.idBicicletaAAgregar.set(idNumerico);
+        
+        // Y llamamos a la función existente para meterla al carrito
+        this.agregarLinea();
+      }
+    });
+  }
+
+  // Método para el Datalist del buscador inteligente
   seleccionarBicicleta(event: any): void {
     const textoIngresado = event.target.value;
     
