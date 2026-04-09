@@ -1,196 +1,90 @@
-<!-- src/app/features/home/home.component.html -->
-<div class="home-layout" [class.sidebar-collapsed]="isSidebarCollapsed()">
-
-  <!-- ============ SIDEBAR FILTROS ============ -->
-  <aside class="sidebar">
-    <div class="filter-header" style="display: flex; justify-content: space-between; align-items: flex-start;">
-      <div>
-        <span class="filter-title">FILTERS</span>
-        <span class="filter-sub">Refine your ride</span>
+<div class="landing-page">
+  
+  <section class="hero-section">
+    <video src="/videos/home-bg.mp4" autoplay loop playsinline [muted]="true" class="bg-video"></video>
+    <div class="overlay"></div>
+    
+    <div class="hero-content">
+      <span class="badge-series">NEW E-MOTION SERIES 2026</span>
+      <h1 class="hero-title">THE FUTURE OF<br>RIDING IS HERE.</h1>
+      <p class="hero-subtitle">Experience unprecedented power and range with our latest electric mountain bikes.</p>
+      
+      <div class="hero-actions">
+        <a routerLink="/electric" class="btn-primary-large">EXPLORE ELECTRIC</a>
+        <a routerLink="/all" class="btn-secondary-large">VIEW ALL BIKES</a>
       </div>
-      <button class="icon-btn-sm toggle-sidebar-btn" (click)="toggleSidebar()" title="Ocultar Filtros" style="margin-top: -4px;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-      </button>
+    </div>
+  </section>
+
+  <section class="categories-section">
+    <div class="section-header">
+      <h2>CHOOSE YOUR TERRAIN</h2>
+      <p>Engineered for every path, trail, and road.</p>
     </div>
 
-    <!-- Categories -->
-    <div class="filter-group">
-      <button class="filter-group-btn" (click)="toggleCategories()">
-        <span class="filter-icon">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
-            <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
-          </svg>
-        </span>
-        CATEGORIES
-        <svg class="chevron" [class.open]="showCategories()" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <polyline points="6 9 12 15 18 9"/>
-        </svg>
-      </button>
-      @if (showCategories()) {
-        <div class="filter-body">
-          <label class="checkbox-row">
-            <input type="checkbox" /> Enduro
-          </label>
-          <label class="checkbox-row">
-            <input type="checkbox" /> Cross Country
-          </label>
-          <label class="checkbox-row">
-            <input type="checkbox" /> Trail
-          </label>
+    <div class="categories-grid">
+      <a routerLink="/mountain" class="cat-card">
+        <div class="cat-bg" style="background-image: url('https://images.unsplash.com/photo-1511994298241-608e28f14fde?q=80&w=800');"></div>
+        <div class="cat-overlay"></div>
+        <div class="cat-content">
+          <h3>MOUNTAIN</h3>
+          <span>Explore Series →</span>
         </div>
-      }
-    </div>
-
-    <!-- Price Range -->
-    <div class="filter-group">
-      <button class="filter-group-btn" (click)="togglePrice()">
-        <span class="filter-icon">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-          </svg>
-        </span>
-        PRICE RANGE
-        <svg class="chevron" [class.open]="showPrice()" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <polyline points="6 9 12 15 18 9"/>
-        </svg>
-      </button>
-      @if (showPrice()) {
-        <div class="filter-body">
-          <div class="price-inputs">
-            <div class="price-field">
-              <label>Min</label>
-              <input type="number" [ngModel]="precioMin()" (ngModelChange)="precioMin.set($event)" placeholder="0" />
-            </div>
-            <span class="price-sep">—</span>
-            <div class="price-field">
-              <label>Max</label>
-              <input type="number" [ngModel]="precioMax()" (ngModelChange)="precioMax.set($event)" placeholder="20000" />
-            </div>
-          </div>
-          <button class="btn-apply" (click)="applyFilters()">Apply</button>
+      </a>
+      
+      <a routerLink="/road" class="cat-card">
+        <div class="cat-bg" style="background-image: url('https://images.unsplash.com/photo-1485965120184-e220f721d03e?q=80&w=800');"></div>
+        <div class="cat-overlay"></div>
+        <div class="cat-content">
+          <h3>ROAD</h3>
+          <span>Explore Series →</span>
         </div>
-      }
-    </div>
-
-    <!-- Brands -->
-    <div class="filter-group">
-      <button class="filter-group-btn" (click)="toggleBrands()">
-        <span class="filter-icon">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/>
-            <line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/>
-            <line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/>
-          </svg>
-        </span>
-        BRANDS
-        <svg class="chevron" [class.open]="showBrands()" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <polyline points="6 9 12 15 18 9"/>
-        </svg>
-      </button>
-      @if (showBrands()) {
-        <div class="filter-body">
-          @for (marca of marcas(); track marca) {
-            <label class="checkbox-row">
-              <input type="checkbox"
-                     [checked]="selectedMarcas().includes(marca)"
-                     (change)="toggleMarca(marca)" />
-              {{ marca }}
-            </label>
-          }
-          @if (marcas().length === 0) {
-            <span class="filter-empty">Cargando...</span>
-          }
+      </a>
+      
+      <a routerLink="/electric" class="cat-card">
+        <div class="cat-bg" style="background-image: url('https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?q=80&w=800');"></div>
+        <div class="cat-overlay"></div>
+        <div class="cat-content">
+          <h3>ELECTRIC</h3>
+          <span>Explore Series →</span>
         </div>
-      }
-    </div>
-
-    <!-- Pro tip -->
-    <div class="pro-tip">
-      <span class="pro-tip-label">PRO TIP</span>
-      <p>Adjust air pressure based on terrain for maximum grip.</p>
-    </div>
-  </aside>
-
-  <!-- ============ CONTENIDO PRINCIPAL ============ -->
-  <div class="main-content">
-    <!-- Hero Banner -->
-    <div class="hero" [style.background-color]="heroConfig.color">
-      <video [src]="heroConfig.video" autoplay loop playsinline [muted]="true" class="hero-bg-video"></video>
-      <div class="hero-gradient-overlay"></div>
-
-      <div class="hero-text">
-        <p class="hero-sub">{{ heroConfig.sub }}</p>
-        <h1 class="hero-title">{{ heroConfig.text }}</h1>
-      </div>
-      <button class="hero-btn" (click)="scrollToGallery()">EXPLORE SERIES</button>
-    </div>
-
-    <div class="gallery-header" id="gallery-section">
-      <div class="gallery-title-wrapper">
-        <button class="icon-btn-sm toggle-sidebar-btn" (click)="toggleSidebar()" title="Alternar Filtros">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="3" y1="12" x2="21" y2="12"></line>
-            <line x1="3" y1="6" x2="21" y2="6"></line>
-            <line x1="3" y1="18" x2="21" y2="18"></line>
-          </svg>
-        </button>
-        <div>
-          <h2 class="gallery-title">{{ tipoLabel }}</h2>
-          <p class="gallery-sub">Precision engineered for the most demanding trails.</p>
+      </a>
+      
+      <a routerLink="/gear" class="cat-card">
+        <div class="cat-bg" style="background-image: url('https://images.unsplash.com/photo-1496150590317-f8d952453f93?q=80&w=800');"></div>
+        <div class="cat-overlay"></div>
+        <div class="cat-content">
+          <h3>GEAR & ACCESSORIES</h3>
+          <span>Explore Series →</span>
         </div>
-      </div>
-
-      <button class="icon-btn-sm">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="14" y2="12"/><line x1="4" y1="18" x2="10" y2="18"/>
-        </svg>
-      </button>
+      </a>
     </div>
+  </section>
 
-    <!-- Product Grid -->
-    @if (loading()) {
-      <div class="grid-skeleton">
-        @for (i of [1,2,3,4,5,6]; track i) {
-          <div class="skeleton-card"></div>
-        }
+  <section class="philosophy-section">
+    <div class="phil-grid">
+      <div class="phil-item">
+        <div class="phil-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <h4>Cutting-Edge Tech</h4>
+        <p>Carbon fiber frames and advanced aerodynamics engineered to win.</p>
       </div>
-    } @else if (error()) {
-      <div class="error-state">
-        <p>{{ error() }}</p>
-        <button class="btn-primary" (click)="loadBikes()">Reintentar</button>
+      <div class="phil-item">
+        <div class="phil-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h4>Lifetime Warranty</h4>
+        <p>We stand proudly behind every weld, component, and frame.</p>
       </div>
-    } @else if (bicicletas().length === 0) {
-      <div class="empty-state">
-        <p>No hay bicicletas disponibles en esta categoría.</p>
+      <div class="phil-item">
+        <div class="phil-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </div>
+        <h4>Global Shipping</h4>
+        <p>Delivered fully assembled to your doorstep, anywhere in the world.</p>
       </div>
-    } @else {
-      <div class="product-grid">
-        @for (bike of bicicletas(); track bike.id_bicicleta) {
-          <a class="product-card" [routerLink]="['/producto', bike.id_bicicleta]">
-            @if (bike.etiqueta) {
-              <span class="badge" [class.badge-new]="bike.etiqueta === 'NEW ARRIVAL'"
-                                  [class.badge-luxury]="bike.etiqueta === 'LUXURY TIER'">
-                {{ bike.etiqueta }}
-              </span>
-            }
-            <div class="product-img">
-              <img [src]="bike.imagen_url && bike.imagen_url.startsWith('http') ? bike.imagen_url : '/placeholder-bike.jpg'"
-                   [alt]="bike.modelo"
-                   loading="lazy" />
-            </div>
-            <div class="product-info">
-              <p class="product-brand">{{ bike.marca }}</p>
-              <h3 class="product-name">{{ bike.modelo }}</h3>
-              <p class="product-price">{{ formatPrice(bike.precio) }}</p>
-            </div>
-          </a>
-        }
-      </div>
-    }
+    </div>
+  </section>
 
-  </div>
 </div>

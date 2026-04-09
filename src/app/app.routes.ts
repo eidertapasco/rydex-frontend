@@ -1,14 +1,20 @@
+// src/app/app.routes.ts
 import { Routes } from '@angular/router';
 import { adminGuard } from './core/services/admin.guard';
 import { AdminLayoutComponent } from './features/admin/admin-layout.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'mountain', pathMatch: 'full' },
+  // 1. LA PORTADA PRINCIPAL (Landing Page)
+  { path: '', loadComponent: () => import('./features/home/home.component').then(m => m.HomeComponent), pathMatch: 'full' },
+
+  // ... RUTAS DE AUTENTICACIÓN Y CLIENTE ...
   { path: 'login',    loadComponent: () => import('./features/login/login.component').then(m => m.LoginComponent) },
   { path: 'register', loadComponent: () => import('./features/register/register.component').then(m => m.RegisterComponent) },
   { path: 'carrito',  loadComponent: () => import('./features/cart/cart.component').then(m => m.CartComponent) },
   { path: 'producto/:id', loadComponent: () => import('./features/product-detail/product-detail.component').then(m => m.ProductDetailComponent) },
   { path: 'mis-compras', loadComponent: () => import('./features/client/mis-compras/mis-compras.component').then(m => m.MisComprasComponent) },
+  
+  // ... RUTAS DEL PANEL DE ADMINISTRADOR ...
   {
     path: 'admin',
     component: AdminLayoutComponent,
@@ -28,6 +34,16 @@ export const routes: Routes = [
       { path: 'proveedores/:id/editar',  loadComponent: () => import('./features/admin/suppliers/supplier-form.component').then(m => m.SupplierFormComponent) },
     ]
   },
-  { path: ':tipo', loadComponent: () => import('./features/home/home.component').then(m => m.HomeComponent) },
-  { path: '**', redirectTo: 'mountain' }
+  
+  { path: 'home', redirectTo: '', pathMatch: 'full' },
+
+  // Ruta específica para ver TODO el catálogo sin filtros
+  { path: 'all', loadComponent: () => import('./features/catalog/catalog.component').then(m => m.CatalogComponent), data: { tipo: 'all' } },
+  
+  // 2. EL CATÁLOGO DINÁMICO (mountain, road, electric, gear)
+  // Ahora carga el CatalogComponent que creamos en el paso anterior
+  { path: ':tipo', loadComponent: () => import('./features/catalog/catalog.component').then(m => m.CatalogComponent) },
+  
+  // 3. FALLBACK: Si escriben una URL que no existe, los mandamos a la portada
+  { path: '**', redirectTo: '' }
 ];
