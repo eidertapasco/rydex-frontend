@@ -126,11 +126,10 @@
         <p class="hero-sub">{{ heroConfig.sub }}</p>
         <h1 class="hero-title">{{ heroConfig.text }}</h1>
       </div>
-      <button class="hero-btn">EXPLORE SERIES</button>
+      <button class="hero-btn" (click)="scrollToGallery()">EXPLORE SERIES</button>
     </div>
 
-    <!-- Gallery Header -->
-    <div class="gallery-header">
+    <div class="gallery-header" id="gallery-section">
       <div class="gallery-title-wrapper">
         <button class="icon-btn-sm toggle-sidebar-btn" (click)="toggleSidebar()" title="Alternar Filtros">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
