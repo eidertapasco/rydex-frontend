@@ -91,7 +91,9 @@ export class HomeComponent implements OnInit {
     this.loading.set(true);
     this.error.set(null);
     const f: BikeFilters = {
-      tipo: this.tipo,
+      // CORRECCIÓN: Convertimos el string a MAYÚSCULAS para que el Backend Java 
+      // lo reconozca correctamente como un Enum (MOUNTAIN, ROAD, etc.)
+      tipo: this.tipo.toUpperCase(),
       ...this.filters()
     };
     this.bikeService.getBicicletas(f).subscribe({
@@ -123,4 +125,13 @@ export class HomeComponent implements OnInit {
   toggleCategories(): void { this.showCategories.update(v => !v); }
   togglePrice():      void { this.showPrice.update(v => !v); }
   toggleBrands():     void { this.showBrands.update(v => !v); }
+
+  // Método para el botón EXPLORE SERIES (Smooth Scroll)
+  scrollToGallery(): void {
+    const galleryElement = document.getElementById('gallery-section');
+    if (galleryElement) {
+      // Desplaza la vista suavemente hasta la sección de las bicicletas
+      galleryElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
 }
