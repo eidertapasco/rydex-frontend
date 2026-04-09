@@ -5,7 +5,7 @@ import { FormsModule }  from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AdminService, NuevaBicicleta } from '../../../core/services/admin.service';
 import { BikeService } from '../../../core/services/bike.service';
-import { environment } from '../../../../environments/environment'; // <-- Para saber la URL base
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-bike-form',
@@ -15,7 +15,7 @@ import { environment } from '../../../../environments/environment'; // <-- Para 
   styleUrls: ['./bike-form.component.css']
 })
 export class BikeFormComponent implements OnInit {
-  @Input() id?: string; // Si existe, es edición; si no, es creación
+  @Input() id?: string; 
 
   private adminService = inject(AdminService);
   private bikeService  = inject(BikeService);
@@ -38,7 +38,7 @@ export class BikeFormComponent implements OnInit {
     sku: '', marca: '', modelo: '',
     tipo: 'Mountain', 
     precio: 0, 
-    precio_compra: 0, // <-- INICIALIZADO
+    precio_compra: 0, 
     stock_actual: 0, stock_minimo: 5,
     descripcion: '', imagen_url: ''
   });
@@ -55,7 +55,9 @@ export class BikeFormComponent implements OnInit {
             sku: b.sku || '',
             marca: b.marca || '',
             modelo: b.modelo || '',
-            tipo: b.tipo || 'Mountain',
+            // Cuando recibimos del backend (que viene en MAYÚSCULAS), 
+            // lo ideal es capitalizarlo para que el select del HTML lo entienda
+            tipo: b.tipo ? b.tipo.charAt(0).toUpperCase() + b.tipo.slice(1).toLowerCase() : 'Mountain',
             precio: b.precio || 0,
             precio_compra: b.precio_compra || 0,
             stock_actual: b.stock_actual || 0,
@@ -129,10 +131,17 @@ export class BikeFormComponent implements OnInit {
     if (!this.validate()) return;
 
     this.saving.set(true);
-    const data = this.form();
+    
+    const dataCruda = this.form();
+    const dataAEnviar = {
+      ...dataCruda,
+      // Forzamos el tipo a MAYÚSCULAS para que Spring Boot lo acepte como Enum
+      tipo: dataCruda.tipo ? dataCruda.tipo.toUpperCase() : 'MOUNTAIN'
+    };
+
     const obs = this.isEdit
-      ? this.adminService.updateBicicleta(Number(this.id), data)
-      : this.adminService.createBicicleta(data);
+      ? this.adminService.updateBicicleta(Number(this.id), dataAEnviar)
+      : this.adminService.createBicicleta(dataAEnviar);
 
     obs.subscribe({
       next: () => {
