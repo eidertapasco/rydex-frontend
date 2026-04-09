@@ -244,3 +244,179 @@ button:disabled, .btn-primary:disabled {
     font-size: 1.5rem !important;
   }
 }
+
+/* ==========================================================================
+   RYDEX FOOTER STYLES (Adaptable Light/Dark Mode)
+   ========================================================================== */
+.rydex-footer {
+  /* Usamos las variables de tu tema en lugar de negro estático */
+  background-color: var(--color-surface, #111); 
+  color: var(--color-text, #fff);
+  padding: 80px 4% 30px;
+  border-top: 1px solid var(--color-border, #222);
+  margin-top: 60px;
+  font-family: inherit;
+}
+
+.rydex-footer .footer-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.rydex-footer .footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.5fr;
+  gap: 40px;
+  margin-bottom: 60px;
+}
+
+/* 1. Columna de Marca */
+.rydex-footer .brand-logo {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #ff4d00; /* El naranja se mantiene siempre */
+  letter-spacing: -1px;
+  margin-bottom: 16px;
+  margin-top: 0;
+}
+
+.rydex-footer .brand-desc {
+  color: var(--color-text-muted, #a0a0a0);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 24px;
+  max-width: 320px;
+}
+
+.rydex-footer .social-links {
+  display: flex;
+  gap: 16px;
+}
+
+.rydex-footer .social-links a {
+  color: var(--color-text-muted, #a0a0a0);
+  transition: color 0.3s ease, transform 0.3s ease;
+  display: flex;
+}
+
+.rydex-footer .social-links a:hover {
+  color: #ff4d00;
+  transform: translateY(-3px);
+}
+
+/* 2. Columnas de Enlaces */
+.rydex-footer .footer-links h3, 
+.rydex-footer .footer-newsletter h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  margin-top: 0;
+  letter-spacing: 0.5px;
+  color: var(--color-text, #fff);
+}
+
+.rydex-footer .footer-links a {
+  display: block;
+  color: var(--color-text-muted, #a0a0a0);
+  text-decoration: none;
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.rydex-footer .footer-links a:hover {
+  color: var(--color-text, #fff);
+  transform: translateX(4px);
+}
+
+/* 3. Newsletter */
+.rydex-footer .footer-newsletter p {
+  color: var(--color-text-muted, #a0a0a0);
+  font-size: 0.95rem;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.rydex-footer .news-input-group {
+  display: flex;
+  background-color: var(--color-bg, #000);
+  border: 1px solid var(--color-border, #333);
+  border-radius: 6px;
+  overflow: hidden;
+  transition: border-color 0.3s ease;
+}
+
+.rydex-footer .news-input-group:focus-within {
+  border-color: #ff4d00;
+}
+
+.rydex-footer .news-input-group input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 12px 16px;
+  color: var(--color-text, #fff);
+  outline: none;
+  font-family: inherit;
+}
+
+.rydex-footer .news-input-group input::placeholder {
+  color: var(--color-text-muted, #666);
+}
+
+.rydex-footer .btn-subscribe {
+  background-color: #ff4d00;
+  color: white;
+  border: none;
+  padding: 0 20px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rydex-footer .btn-subscribe:hover {
+  background-color: #e64500;
+}
+
+/* 4. Copyright y Legales */
+.rydex-footer .footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 30px;
+  border-top: 1px solid var(--color-border, #1a1a1a);
+  color: var(--color-text-muted, #666);
+  font-size: 0.85rem;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.rydex-footer .footer-bottom p { margin: 0; }
+
+.rydex-footer .legal-links {
+  display: flex;
+  gap: 24px;
+}
+
+.rydex-footer .legal-links a {
+  color: var(--color-text-muted, #666);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.rydex-footer .legal-links a:hover {
+  color: var(--color-text, #fff);
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .rydex-footer .footer-grid { grid-template-columns: 1fr 1fr; gap: 50px; }
+}
+
+@media (max-width: 576px) {
+  .rydex-footer .footer-grid { grid-template-columns: 1fr; gap: 40px; }
+  .rydex-footer .footer-bottom { flex-direction: column; text-align: center; }
+}

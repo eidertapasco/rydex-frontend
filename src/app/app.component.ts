@@ -1,18 +1,13 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterOutlet, RouterLink } from '@angular/router'; // <-- Añadido RouterLink
 import { NavbarComponent } from './shared/navbar/navbar.component';
 import { ThemeService } from './core/services/theme.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NavbarComponent],
-  template: `
-    <app-navbar />
-    <main class="page-content">
-      <router-outlet />
-    </main>
-  `
+  imports: [RouterOutlet, NavbarComponent, RouterLink], // <-- Añadido RouterLink
+  templateUrl: './app.component.html' // <-- Ahora apunta al archivo que creaste
 })
 export class AppComponent implements OnInit {
   private theme = inject(ThemeService);
