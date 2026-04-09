@@ -89,3 +89,8 @@
 
 /* Small button variant */
 .btn-sm { padding: 8px 16px; font-size: 0.8rem; }
+
+/* NUEVO: Separación extra para el botón de modo oscuro */
+.theme-btn {
+  margin-left: 16px; /* Ajusta este valor si necesitas más o menos separación */
+}
