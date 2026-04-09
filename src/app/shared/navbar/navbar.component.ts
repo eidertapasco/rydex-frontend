@@ -1,3 +1,4 @@
+// src/app/shared/navbar/navbar.component.ts
 import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -44,4 +45,10 @@ export class NavbarComponent {
 
   goToCart():  void { this.router.navigate(['/carrito']); }
   goToLogin(): void { this.router.navigate(['/login']);   }
+
+  // AQUI: Función vacía para el botón de favoritos
+  toggleFavoritos(): void {
+    console.log('Botón de favoritos clickeado. La funcionalidad se agregará pronto.');
+    // Aquí irá la lógica para abrir el panel de favoritos o redirigir
+  }
 }
