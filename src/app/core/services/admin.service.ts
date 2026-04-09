@@ -66,6 +66,30 @@ export class AdminService {
     return this.http.get(`${this.api}/admin/reporte-financiero`, { responseType: 'blob' });
   }
 
+  // NUEVO: Para descargar el reporte de Ingresos detallado por fecha
+  descargarReporteIngresos(inicio?: string, fin?: string): Observable<Blob> {
+    let params = new HttpParams();
+    if (inicio) params = params.set('inicio', inicio);
+    if (fin) params = params.set('fin', fin);
+    return this.http.get(`${this.api}/admin/reporte-ventas-detalle`, { params, responseType: 'blob' });
+  }
+
+  // NUEVO: Para descargar el reporte de Egresos detallado por fecha
+  descargarReporteEgresos(inicio?: string, fin?: string): Observable<Blob> {
+    let params = new HttpParams();
+    if (inicio) params = params.set('inicio', inicio);
+    if (fin) params = params.set('fin', fin);
+    return this.http.get(`${this.api}/admin/reporte-compras-detalle`, { params, responseType: 'blob' });
+  }
+
+  // NUEVO: Para descargar el reporte de Ganancias detallado por fecha
+  descargarReporteGanancias(inicio?: string, fin?: string): Observable<Blob> {
+    let params = new HttpParams();
+    if (inicio) params = params.set('inicio', inicio);
+    if (fin) params = params.set('fin', fin);
+    return this.http.get(`${this.api}/admin/reporte-ganancias-detalle`, { params, responseType: 'blob' });
+  }
+
   // ---- Bicicletas ----
   getBicicletas(): Observable<PaginatedResponse<Bicicleta>> {
     return this.http.get<PaginatedResponse<Bicicleta>>(`${this.api}/bicicletas`);

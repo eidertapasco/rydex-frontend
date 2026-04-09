@@ -27,7 +27,7 @@
   } @else if (metrics()) {
     <div class="metrics-grid">
       
-      <div class="metric-card" style="border-left: 4px solid #10b981;">
+      <div class="metric-card clickable-card" style="border-left: 4px solid #10b981;" (click)="abrirModalReportes('ingresos')">
         <div class="metric-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>
@@ -40,7 +40,7 @@
         </div>
       </div>
 
-      <div class="metric-card" style="border-left: 4px solid #ef4444;">
+      <div class="metric-card clickable-card" style="border-left: 4px solid #ef4444;" (click)="abrirModalReportes('egresos')">
         <div class="metric-icon" style="background: rgba(239, 68, 68, 0.1); color: #ef4444;">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/>
@@ -53,7 +53,7 @@
         </div>
       </div>
 
-      <div class="metric-card" style="border-left: 4px solid #10b981;">
+      <div class="metric-card clickable-card" style="border-left: 4px solid #10b981;" (click)="abrirModalReportes('ganancias')">
         <div class="metric-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
@@ -178,6 +178,62 @@
           </tbody>
         </table>
       }
+    </div>
+  </div>
+</div>
+}
+<!-- ============================================== -->
+<!-- NUEVO: OVERLAY MODAL PARA FILTRAR REPORTES     -->
+<!-- ============================================== -->
+@if (showReportModal()) {
+<div class="modal-backdrop" (click)="cerrarModalReportes()">
+  <div class="modal-content" style="max-width: 500px;" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <div class="modal-title-group">
+        <div class="metric-icon" [ngClass]="{'green': tipoReporte() === 'ingresos' || tipoReporte() === 'ganancias', 'red': tipoReporte() === 'egresos'}" style="margin: 0;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+             @if (tipoReporte() === 'ingresos') {
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>
+             } @else if (tipoReporte() === 'egresos') {
+                <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/>
+             } @else {
+                <!-- Icono especial para Ganancias (Signo Dolar o similar) -->
+                <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+             }
+          </svg>
+        </div>
+        <h2>Reporte de 
+          @if (tipoReporte() === 'ingresos') { Ingresos (Ventas) }
+          @else if (tipoReporte() === 'egresos') { Egresos (Compras) }
+          @else { Ganancia Neta (Utilidad) }
+        </h2>
+      </div>
+      <button class="btn-close" (click)="cerrarModalReportes()">×</button>
+    </div>
+
+    <div class="modal-body">
+      <p style="margin-bottom: 20px; color: var(--color-text-muted); font-size: 0.9rem;">
+        Selecciona el rango de fechas para generar el documento en formato PDF.
+      </p>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label>Desde (Fecha Inicial)</label>
+          <input type="date" class="form-control" [(ngModel)]="fechaInicio">
+        </div>
+        <div class="form-group">
+          <label>Hasta (Fecha Final)</label>
+          <input type="date" class="form-control" [(ngModel)]="fechaFin">
+        </div>
+      </div>
+      
+      <div style="margin-top: 28px; display: flex; justify-content: flex-end; gap: 12px;">
+        <button class="btn-secondary" (click)="cerrarModalReportes()" [disabled]="generandoReporte()">Cancelar</button>
+        <button class="btn-primary" (click)="generarReporteDetallado()" [disabled]="generandoReporte()">
+          @if (generandoReporte()) { Generando PDF... } 
+          @else { Descargar PDF }
+        </button>
+      </div>
     </div>
   </div>
 </div>
